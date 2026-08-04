@@ -1,16 +1,14 @@
 """
-Tests for Tier 2 — Semantic Router
+Tests for the semantic router
 
 Validates routing logic, template selection, and fallback behavior.
 """
 
 import pytest
-import pytest_asyncio
-
-from tier1_detector.phoneme_extractor import PhonemeResult
-from tier2_router.router import SemanticRouter, TherapyResponse
-from tier2_router.intent_map import INTENT_REGISTRY, get_intent
-from tier2_router.templates import TEMPLATES, pick_template
+from speechllm_core.detection.phonemes import PhonemeResult
+from speechllm_core.routing.intents import INTENT_REGISTRY, get_intent
+from speechllm_core.routing.router import SemanticRouter
+from speechllm_core.routing.templates import TEMPLATES, pick_template
 
 
 class TestIntentMap:

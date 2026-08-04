@@ -1,0 +1,38 @@
+[Unit]
+Description=SpeechLLM — Indonesian speech therapy assistant
+Documentation=file:/opt/speechllm/CLAUDE.md
+After=sound.target
+# No network dependency on purpose: this unit is designed to work with WiFi off.
+
+[Service]
+Type=simple
+User=speechllm
+# audio: microphone access. dialout: /dev/ttyS5. gpio: the BUSY pin.
+SupplementaryGroups=audio dialout gpio
+
+EnvironmentFile=/etc/speechllm/device.env
+WorkingDirectory=/opt/speechllm
+ExecStart=/opt/speechllm/.venv/bin/python -m speechllm_device
+
+# Models take several seconds to load on an A53; don't let systemd give up early.
+TimeoutStartSec=120
+Restart=always
+RestartSec=5
+# If it crash-loops 5 times in 5 minutes, stop and leave the logs intact rather
+# than hammering the SD card with restarts.
+StartLimitBurst=5
+StartLimitIntervalSec=300
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=speechllm
+
+# ── Hardening ────────────────────────────────────────────────
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/log/speechllm
+
+[Install]
+WantedBy=multi-user.target

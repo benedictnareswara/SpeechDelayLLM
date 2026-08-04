@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "speechllm-server"
+version = "0.2.0"
+description = "FastAPI development harness for SpeechLLM — laptop only, not deployed to the device"
+requires-python = ">=3.10"
+dependencies = [
+    "speechllm-core[generation]",
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.9.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]

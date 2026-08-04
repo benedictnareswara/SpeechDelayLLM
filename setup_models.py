@@ -7,7 +7,10 @@ Uses only Python stdlib — no wget, curl, or other dependencies needed.
 Models:
   1. Silero VAD ONNX (~2MB)   → downloaded here into models/
   2. Whisper tiny (~75MB)     → auto-downloaded by faster-whisper on first use
-                                 cached to ~/.cache/huggingface/
+                                 cached to ~/.cache/huggingface/ (or $HF_HOME)
+
+On an offline device, run this once while it still has network, or copy the
+models/ directory and the HuggingFace cache across from a laptop.
 
 Usage:
     python setup_models.py
@@ -100,8 +103,9 @@ def main():
         print(f"    📄 {f.name}  ({f.stat().st_size / 1_000_000:.1f} MB)")
     print("    📁 Whisper tiny → ~/.cache/huggingface/ (auto-managed)")
     print()
-    print("  Next step — start the server:")
-    print("    uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload")
+    print("  Next steps:")
+    print("    laptop:  uvicorn speechllm_server.main:app --reload")
+    print("    device:  python -m speechllm_device --dry-run -v")
     print()
 
 

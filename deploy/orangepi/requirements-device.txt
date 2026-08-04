@@ -1,0 +1,23 @@
+# Pinned aarch64 / Python 3.10 dependencies for the Orange Pi Zero 3.
+#
+# ⚠️ THESE PINS ARE UNVERIFIED. Resolving them on the actual board is
+# Milestone 0 — do it before writing any pipeline code.
+#
+# Known risks to check on-device:
+#   * onnxruntime — aarch64 manylinux wheels exist but lag x86 releases;
+#     the version that actually installs on py3.10/aarch64 may differ.
+#   * ctranslate2 (via faster-whisper) — some builds cap numpy<2. If pip
+#     backtracks forever, pin numpy first and let ctranslate2 follow.
+#   * soxr — has aarch64 wheels; falls back to a slow source build if not.
+#
+# Once `pip install -r` succeeds and tools/bench_device.py runs, freeze the
+# resolved set over this file:
+#     pip freeze | grep -Ei 'numpy|onnxruntime|faster-whisper|ctranslate2|sounddevice|soxr|pyserial|levenshtein'
+
+numpy>=1.24,<2.0
+onnxruntime>=1.16
+faster-whisper>=1.0.0
+sounddevice>=0.4.7
+soxr>=0.3.7
+pyserial>=3.5
+python-Levenshtein>=0.25.1

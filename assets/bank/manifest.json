@@ -1,0 +1,1062 @@
+{
+  "version": 1,
+  "voice": "gtts",
+  "rendered_at": "2026-08-04T06:04:43+00:00",
+  "ui_tracks": {
+    "ready": 1,
+    "thinking": 2,
+    "error": 3
+  },
+  "tracks": [
+    {
+      "phoneme": "A",
+      "variant": 0,
+      "text": "Ayah! Coba bilang Ayah, pintar!",
+      "folder": 1,
+      "track": 1,
+      "duration_ms": 4464,
+      "sha256": "02c4bdc052640042",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "A",
+      "variant": 1,
+      "text": "Aaa... Apel! Apel merah enak!",
+      "folder": 1,
+      "track": 2,
+      "duration_ms": 3911,
+      "sha256": "13481425c9fc4f97",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "A",
+      "variant": 2,
+      "text": "Air! Mau minum air, sayang?",
+      "folder": 1,
+      "track": 3,
+      "duration_ms": 4056,
+      "sha256": "220c2fa59c5fe7d9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "A",
+      "variant": 3,
+      "text": "Aaa bagus sekali! Coba lagi ya!",
+      "folder": 1,
+      "track": 4,
+      "duration_ms": 3840,
+      "sha256": "440e9d113a2743a3",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "A",
+      "variant": 4,
+      "text": "Ayo! Ayo main sama Ayah!",
+      "folder": 1,
+      "track": 5,
+      "duration_ms": 3360,
+      "sha256": "1301fc10bed8b9aa",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "BA",
+      "variant": 0,
+      "text": "Bola! Mau main bola? Ayo!",
+      "folder": 1,
+      "track": 6,
+      "duration_ms": 3744,
+      "sha256": "41da36743b1b5c55",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "BA",
+      "variant": 1,
+      "text": "Baju! Wah baju bagus ya!",
+      "folder": 1,
+      "track": 7,
+      "duration_ms": 3504,
+      "sha256": "103a731d2f1888b2",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "BA",
+      "variant": 2,
+      "text": "Bapak! Coba bilang Bapak, pintar!",
+      "folder": 1,
+      "track": 8,
+      "duration_ms": 4416,
+      "sha256": "9b7a0b94c41de726",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "BA",
+      "variant": 3,
+      "text": "Baik! Anak baik, hebat sekali!",
+      "folder": 1,
+      "track": 9,
+      "duration_ms": 4440,
+      "sha256": "eed8caf0cfe7e32b",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "BA",
+      "variant": 4,
+      "text": "Bola! Lempar bola, yuk main!",
+      "folder": 1,
+      "track": 10,
+      "duration_ms": 4151,
+      "sha256": "351fb5205389f105",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "DA",
+      "variant": 0,
+      "text": "Dada! Dadah, bye bye! Pintar!",
+      "folder": 1,
+      "track": 11,
+      "duration_ms": 4584,
+      "sha256": "1a521855e78583b9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "DA",
+      "variant": 1,
+      "text": "Duduk! Ayo duduk, anak pintar!",
+      "folder": 1,
+      "track": 12,
+      "duration_ms": 4176,
+      "sha256": "fed161b01acfcd6f",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "DA",
+      "variant": 2,
+      "text": "Dua! Satu, dua! Hebat!",
+      "folder": 1,
+      "track": 13,
+      "duration_ms": 4176,
+      "sha256": "d59d284470288fd0",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "DA",
+      "variant": 3,
+      "text": "Dada! Coba bilang dada lagi!",
+      "folder": 1,
+      "track": 14,
+      "duration_ms": 3528,
+      "sha256": "ece22613c6d2a5ef",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "DA",
+      "variant": 4,
+      "text": "Dekat! Sini dekat Mama, yuk!",
+      "folder": 1,
+      "track": 15,
+      "duration_ms": 4128,
+      "sha256": "177ea2ec656efa02",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "E",
+      "variant": 0,
+      "text": "Enak! Wah enak ya, coba bilang!",
+      "folder": 1,
+      "track": 16,
+      "duration_ms": 4344,
+      "sha256": "e264713958b767b8",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "E",
+      "variant": 1,
+      "text": "Es! Mau es? Bilang eees!",
+      "folder": 1,
+      "track": 17,
+      "duration_ms": 4056,
+      "sha256": "301a84a4383de4e9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "E",
+      "variant": 2,
+      "text": "Eee bagus! Pintar, coba lagi!",
+      "folder": 1,
+      "track": 18,
+      "duration_ms": 4631,
+      "sha256": "6ee91a2b0ef90327",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "E",
+      "variant": 3,
+      "text": "Elang! Burung elang terbang tinggi!",
+      "folder": 1,
+      "track": 19,
+      "duration_ms": 3671,
+      "sha256": "dd4e4cd102fb9d54",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "E",
+      "variant": 4,
+      "text": "Eee hebat! Ayo sekali lagi!",
+      "folder": 1,
+      "track": 20,
+      "duration_ms": 3864,
+      "sha256": "a95e4ade3ece2507",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "I",
+      "variant": 0,
+      "text": "Ibu! Iya, Ibu di sini sayang!",
+      "folder": 1,
+      "track": 21,
+      "duration_ms": 4464,
+      "sha256": "316a89e9494452ee",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "I",
+      "variant": 1,
+      "text": "Ikan! Lihat ikan, bagus ya!",
+      "folder": 1,
+      "track": 22,
+      "duration_ms": 4224,
+      "sha256": "57c04c843a5d3188",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "I",
+      "variant": 2,
+      "text": "Ini! Ini apa? Coba bilang!",
+      "folder": 1,
+      "track": 23,
+      "duration_ms": 3960,
+      "sha256": "93d43df33a57c306",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "I",
+      "variant": 3,
+      "text": "Iii pintar! Coba sekali lagi!",
+      "folder": 1,
+      "track": 24,
+      "duration_ms": 3720,
+      "sha256": "12230aab30ad62f2",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "I",
+      "variant": 4,
+      "text": "Ibu sayang kamu! Coba lagi ya!",
+      "folder": 1,
+      "track": 25,
+      "duration_ms": 3671,
+      "sha256": "d1fd27a3b5747ef0",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "INI",
+      "variant": 0,
+      "text": "Ini! Ini apa? Coba bilang!",
+      "folder": 1,
+      "track": 26,
+      "duration_ms": 3960,
+      "sha256": "93d43df33a57c306",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "INI",
+      "variant": 1,
+      "text": "Ini buku! Wah suka buku ya!",
+      "folder": 1,
+      "track": 27,
+      "duration_ms": 3576,
+      "sha256": "4127c04190772901",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "INI",
+      "variant": 2,
+      "text": "Ini Mama! Iya ini Mama!",
+      "folder": 1,
+      "track": 28,
+      "duration_ms": 3480,
+      "sha256": "300879b9448ee02c",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "INI",
+      "variant": 3,
+      "text": "Ini bagus! Pintar bilang ini!",
+      "folder": 1,
+      "track": 29,
+      "duration_ms": 3864,
+      "sha256": "3ea6c08762f93349",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "INI",
+      "variant": 4,
+      "text": "Ini adik! Sayang adik ya!",
+      "folder": 1,
+      "track": 30,
+      "duration_ms": 3408,
+      "sha256": "67fc4048bb1ea1a0",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "ITU",
+      "variant": 0,
+      "text": "Itu! Itu apa? Coba bilang!",
+      "folder": 1,
+      "track": 31,
+      "duration_ms": 4031,
+      "sha256": "d83a1dccf40779bc",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "ITU",
+      "variant": 1,
+      "text": "Itu bola! Wah pintar sekali!",
+      "folder": 1,
+      "track": 32,
+      "duration_ms": 3744,
+      "sha256": "99d54e7e8c8e8905",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "ITU",
+      "variant": 2,
+      "text": "Itu kucing! Lihat kucing lucu!",
+      "folder": 1,
+      "track": 33,
+      "duration_ms": 3840,
+      "sha256": "2255bdbb66151e36",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "ITU",
+      "variant": 3,
+      "text": "Iya itu! Kamu pintar, hebat!",
+      "folder": 1,
+      "track": 34,
+      "duration_ms": 4151,
+      "sha256": "38d8d4f78a4efc15",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "ITU",
+      "variant": 4,
+      "text": "Itu bagus! Coba bilang lagi!",
+      "folder": 1,
+      "track": 35,
+      "duration_ms": 3911,
+      "sha256": "cbed878ebc48a8c5",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "IYA",
+      "variant": 0,
+      "text": "Iya! Wah pintar bilang iya!",
+      "folder": 1,
+      "track": 36,
+      "duration_ms": 3408,
+      "sha256": "51e623083090cc33",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "IYA",
+      "variant": 1,
+      "text": "Iya benar! Kamu hebat sekali!",
+      "folder": 1,
+      "track": 37,
+      "duration_ms": 3960,
+      "sha256": "976a9b3403218ea1",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "IYA",
+      "variant": 2,
+      "text": "Iya mau! Ayo kita main!",
+      "folder": 1,
+      "track": 38,
+      "duration_ms": 3336,
+      "sha256": "55d1ff517c87c862",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "IYA",
+      "variant": 3,
+      "text": "Iya bagus! Pintar sekali sayang!",
+      "folder": 1,
+      "track": 39,
+      "duration_ms": 4296,
+      "sha256": "8b1116d167dce9b6",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "IYA",
+      "variant": 4,
+      "text": "Iya! Coba bilang iya lagi!",
+      "folder": 1,
+      "track": 40,
+      "duration_ms": 3336,
+      "sha256": "acdb41b104585e84",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "JARGON",
+      "variant": 0,
+      "text": "Wah suara bagus! Coba bilang Mama!",
+      "folder": 1,
+      "track": 41,
+      "duration_ms": 4151,
+      "sha256": "a8ca05ce15abeac5",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "JARGON",
+      "variant": 1,
+      "text": "Bagus! Ayo coba bilang Papa!",
+      "folder": 1,
+      "track": 42,
+      "duration_ms": 3720,
+      "sha256": "91c05e751fee2e02",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "JARGON",
+      "variant": 2,
+      "text": "Suara lucu! Bilang Aaa yuk!",
+      "folder": 1,
+      "track": 43,
+      "duration_ms": 3551,
+      "sha256": "b2e1eb87f36665a6",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "JARGON",
+      "variant": 3,
+      "text": "Hehe bagus! Coba bilang Bola!",
+      "folder": 1,
+      "track": 44,
+      "duration_ms": 3840,
+      "sha256": "b65bb576098fe4b6",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "JARGON",
+      "variant": 4,
+      "text": "Wah hebat! Yuk bilang Mama!",
+      "folder": 1,
+      "track": 45,
+      "duration_ms": 3311,
+      "sha256": "e3fbcbca42998f02",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MA",
+      "variant": 0,
+      "text": "Mama! Iya Mama di sini sayang!",
+      "folder": 1,
+      "track": 46,
+      "duration_ms": 3960,
+      "sha256": "bd4a01a96cf2ab51",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MA",
+      "variant": 1,
+      "text": "Makan! Yuk makan, enak!",
+      "folder": 1,
+      "track": 47,
+      "duration_ms": 3600,
+      "sha256": "13c2a8727df98efd",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MA",
+      "variant": 2,
+      "text": "Mau! Kamu mau apa sayang?",
+      "folder": 1,
+      "track": 48,
+      "duration_ms": 3360,
+      "sha256": "d9c595ac6fe8e3e9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MA",
+      "variant": 3,
+      "text": "Mama sayang kamu! Coba lagi!",
+      "folder": 1,
+      "track": 49,
+      "duration_ms": 3600,
+      "sha256": "0bbd34188cb73195",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MA",
+      "variant": 4,
+      "text": "Main! Ayo main sama Mama!",
+      "folder": 1,
+      "track": 50,
+      "duration_ms": 3408,
+      "sha256": "90ba5a0eea68ef7e",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAKAN",
+      "variant": 0,
+      "text": "Makan! Yuk makan enak, ayo!",
+      "folder": 1,
+      "track": 51,
+      "duration_ms": 4080,
+      "sha256": "b0a02861af7b72d2",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAKAN",
+      "variant": 1,
+      "text": "Makan nasi! Wah enak ya!",
+      "folder": 1,
+      "track": 52,
+      "duration_ms": 3384,
+      "sha256": "670e232ad9530f0c",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAKAN",
+      "variant": 2,
+      "text": "Mau makan? Pintar bilang makan!",
+      "folder": 1,
+      "track": 53,
+      "duration_ms": 3791,
+      "sha256": "2196111ba133cd72",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAKAN",
+      "variant": 3,
+      "text": "Makan! Ayo makan sama Mama!",
+      "folder": 1,
+      "track": 54,
+      "duration_ms": 3456,
+      "sha256": "004799a46145ebf8",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAKAN",
+      "variant": 4,
+      "text": "Makan enak! Nyam nyam, pintar!",
+      "folder": 1,
+      "track": 55,
+      "duration_ms": 3911,
+      "sha256": "837e1e16f0bbb380",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAU",
+      "variant": 0,
+      "text": "Mau! Mau apa sayang? Pintar!",
+      "folder": 1,
+      "track": 56,
+      "duration_ms": 4248,
+      "sha256": "38d657f198eda7a5",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAU",
+      "variant": 1,
+      "text": "Mau makan? Ayo makan yuk!",
+      "folder": 1,
+      "track": 57,
+      "duration_ms": 3311,
+      "sha256": "42d9dd19a106bd73",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAU",
+      "variant": 2,
+      "text": "Mau main? Ayo main, hebat!",
+      "folder": 1,
+      "track": 58,
+      "duration_ms": 3888,
+      "sha256": "49e09a450e4960f3",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAU",
+      "variant": 3,
+      "text": "Iya mau! Wah pintar bilang mau!",
+      "folder": 1,
+      "track": 59,
+      "duration_ms": 3768,
+      "sha256": "c9ace50bffa97c42",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MAU",
+      "variant": 4,
+      "text": "Mau susu? Yuk minum susu!",
+      "folder": 1,
+      "track": 60,
+      "duration_ms": 3480,
+      "sha256": "60eecd585a4e4248",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MINUM",
+      "variant": 0,
+      "text": "Minum! Yuk minum air, ayo!",
+      "folder": 1,
+      "track": 61,
+      "duration_ms": 4008,
+      "sha256": "fe83029670924d36",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MINUM",
+      "variant": 1,
+      "text": "Minum susu! Wah enak ya!",
+      "folder": 1,
+      "track": 62,
+      "duration_ms": 3288,
+      "sha256": "9e1f3d6f1b109dcf",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MINUM",
+      "variant": 2,
+      "text": "Mau minum? Pintar bilang minum!",
+      "folder": 1,
+      "track": 63,
+      "duration_ms": 3551,
+      "sha256": "9ae1658722e00297",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MINUM",
+      "variant": 3,
+      "text": "Minum! Ayo minum sama Mama!",
+      "folder": 1,
+      "track": 64,
+      "duration_ms": 3360,
+      "sha256": "2e9627ee43e8f13f",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "MINUM",
+      "variant": 4,
+      "text": "Minum air! Ahhh segar, pintar!",
+      "folder": 1,
+      "track": 65,
+      "duration_ms": 3984,
+      "sha256": "c2ee1116ba49e2ab",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NA",
+      "variant": 0,
+      "text": "Nama! Siapa nama kamu? Pintar!",
+      "folder": 1,
+      "track": 66,
+      "duration_ms": 4224,
+      "sha256": "97fae53d82888e0d",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NA",
+      "variant": 1,
+      "text": "Nasi! Mau nasi? Yuk makan!",
+      "folder": 1,
+      "track": 67,
+      "duration_ms": 4200,
+      "sha256": "421142572069615f",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NA",
+      "variant": 2,
+      "text": "Naik! Ayo naik, hore!",
+      "folder": 1,
+      "track": 68,
+      "duration_ms": 3288,
+      "sha256": "56683d3d6a5657d9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NA",
+      "variant": 3,
+      "text": "Nyanyi! Ayo nyanyi sama Mama!",
+      "folder": 1,
+      "track": 69,
+      "duration_ms": 3456,
+      "sha256": "a5e594042910c6f5",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NA",
+      "variant": 4,
+      "text": "Nasi enak! Coba bilang nasi!",
+      "folder": 1,
+      "track": 70,
+      "duration_ms": 3744,
+      "sha256": "99eebe67c49a9413",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NOISE",
+      "variant": 0,
+      "text": "Hmm, coba bilang Aaa!",
+      "folder": 1,
+      "track": 71,
+      "duration_ms": 2784,
+      "sha256": "aefbb44c014132f2",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NOISE",
+      "variant": 1,
+      "text": "Yuk, bilang Ma-ma!",
+      "folder": 1,
+      "track": 72,
+      "duration_ms": 2352,
+      "sha256": "3e1c5dd0e58db8e2",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NOISE",
+      "variant": 2,
+      "text": "Coba lagi ya sayang!",
+      "folder": 1,
+      "track": 73,
+      "duration_ms": 2448,
+      "sha256": "d3ff58b7807a3032",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NOISE",
+      "variant": 3,
+      "text": "Sini bilang Aaa sama Mama!",
+      "folder": 1,
+      "track": 74,
+      "duration_ms": 2976,
+      "sha256": "c3dcc00d31cce02d",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "NOISE",
+      "variant": 4,
+      "text": "Ayo coba bilang Pa-pa!",
+      "folder": 1,
+      "track": 75,
+      "duration_ms": 2424,
+      "sha256": "6b424c8e680a3576",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "O",
+      "variant": 0,
+      "text": "Oke! Wah oke, pintar sekali!",
+      "folder": 1,
+      "track": 76,
+      "duration_ms": 4271,
+      "sha256": "dad6987cc2f58081",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "O",
+      "variant": 1,
+      "text": "Ooo bagus! Coba lagi ya sayang!",
+      "folder": 1,
+      "track": 77,
+      "duration_ms": 4128,
+      "sha256": "363fc7786d484488",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "O",
+      "variant": 2,
+      "text": "Orang! Lihat orang itu, yuk!",
+      "folder": 1,
+      "track": 78,
+      "duration_ms": 4031,
+      "sha256": "2b5a516b6d6b4eb4",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "O",
+      "variant": 3,
+      "text": "Ooo hebat! Kamu pintar sekali!",
+      "folder": 1,
+      "track": 79,
+      "duration_ms": 3936,
+      "sha256": "8a8380db45612e96",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "O",
+      "variant": 4,
+      "text": "Oh iya! Bagus, coba lagi!",
+      "folder": 1,
+      "track": 80,
+      "duration_ms": 4008,
+      "sha256": "8ec6097512306601",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "PA",
+      "variant": 0,
+      "text": "Papa! Papa sayang kamu, hebat!",
+      "folder": 1,
+      "track": 81,
+      "duration_ms": 4320,
+      "sha256": "eaa1c16c85a3ed20",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "PA",
+      "variant": 1,
+      "text": "Pagi! Selamat pagi, pintar!",
+      "folder": 1,
+      "track": 82,
+      "duration_ms": 4031,
+      "sha256": "10bd5d2c57d30bae",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "PA",
+      "variant": 2,
+      "text": "Pintar! Kamu pintar sekali, ayo!",
+      "folder": 1,
+      "track": 83,
+      "duration_ms": 4656,
+      "sha256": "462a9b16f53df271",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "PA",
+      "variant": 3,
+      "text": "Papa! Coba bilang Papa lagi!",
+      "folder": 1,
+      "track": 84,
+      "duration_ms": 3576,
+      "sha256": "bdd870ddf9338d5e",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "PA",
+      "variant": 4,
+      "text": "Panas! Hati-hati panas ya sayang!",
+      "folder": 1,
+      "track": 85,
+      "duration_ms": 4320,
+      "sha256": "416ad17038ae4983",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "SUSU",
+      "variant": 0,
+      "text": "Susu! Wah mau susu ya sayang!",
+      "folder": 1,
+      "track": 86,
+      "duration_ms": 3984,
+      "sha256": "bc548a31c360bad0",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "SUSU",
+      "variant": 1,
+      "text": "Susu enak! Yuk minum susu!",
+      "folder": 1,
+      "track": 87,
+      "duration_ms": 3576,
+      "sha256": "f5dafffa43e962b4",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "SUSU",
+      "variant": 2,
+      "text": "Mau susu? Pintar bilang susu!",
+      "folder": 1,
+      "track": 88,
+      "duration_ms": 3768,
+      "sha256": "50e24feaa81649e8",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "SUSU",
+      "variant": 3,
+      "text": "Susu! Susu putih enak ya!",
+      "folder": 1,
+      "track": 89,
+      "duration_ms": 3648,
+      "sha256": "9e32bf3f195a6334",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "SUSU",
+      "variant": 4,
+      "text": "Susu! Ayo minum susu, hebat!",
+      "folder": 1,
+      "track": 90,
+      "duration_ms": 4296,
+      "sha256": "b5aa62091ea89cbe",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TA",
+      "variant": 0,
+      "text": "Tangan! Mana tangan? Coba bilang!",
+      "folder": 1,
+      "track": 91,
+      "duration_ms": 4344,
+      "sha256": "1c421a27a3be19c3",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TA",
+      "variant": 1,
+      "text": "Tidur! Ayo tidur, sayang!",
+      "folder": 1,
+      "track": 92,
+      "duration_ms": 3648,
+      "sha256": "deca66afea8f3420",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TA",
+      "variant": 2,
+      "text": "Tiga! Satu dua tiga, pintar!",
+      "folder": 1,
+      "track": 93,
+      "duration_ms": 4391,
+      "sha256": "a4346d64c1428018",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TA",
+      "variant": 3,
+      "text": "Topi! Pakai topi, bagus ya!",
+      "folder": 1,
+      "track": 94,
+      "duration_ms": 4224,
+      "sha256": "f0515675ffc186cd",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TA",
+      "variant": 4,
+      "text": "Tangan! Tepuk tangan, hebat!",
+      "folder": 1,
+      "track": 95,
+      "duration_ms": 3768,
+      "sha256": "a570869a9ee8efe6",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TIDAK",
+      "variant": 0,
+      "text": "Tidak mau? Oke tidak apa-apa!",
+      "folder": 1,
+      "track": 96,
+      "duration_ms": 3600,
+      "sha256": "a8e9269eb1617943",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TIDAK",
+      "variant": 1,
+      "text": "Nggak? Oke sayang, tidak apa-apa!",
+      "folder": 1,
+      "track": 97,
+      "duration_ms": 4248,
+      "sha256": "30fe95f45aa8a2dc",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TIDAK",
+      "variant": 2,
+      "text": "Tidak! Wah pintar bilang tidak!",
+      "folder": 1,
+      "track": 98,
+      "duration_ms": 3431,
+      "sha256": "bd6a80dcf4a1f6c9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TIDAK",
+      "variant": 3,
+      "text": "Oke nggak mau, kita main lain!",
+      "folder": 1,
+      "track": 99,
+      "duration_ms": 3648,
+      "sha256": "7deae5b22d118db0",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "TIDAK",
+      "variant": 4,
+      "text": "Tidak apa-apa! Coba yang lain!",
+      "folder": 1,
+      "track": 100,
+      "duration_ms": 3528,
+      "sha256": "4c096ae5e8d6add9",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "U",
+      "variant": 0,
+      "text": "Ubi! Wah ubi enak, coba bilang!",
+      "folder": 1,
+      "track": 101,
+      "duration_ms": 4320,
+      "sha256": "f22e848b86c70859",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "U",
+      "variant": 1,
+      "text": "Udang! Udang merah, yuk bilang!",
+      "folder": 1,
+      "track": 102,
+      "duration_ms": 4080,
+      "sha256": "49cc6c655c78fb71",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "U",
+      "variant": 2,
+      "text": "Uuu bagus! Pintar sekali kamu!",
+      "folder": 1,
+      "track": 103,
+      "duration_ms": 4104,
+      "sha256": "fbe499bb1cb14c5d",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "U",
+      "variant": 3,
+      "text": "Untuk kamu! Coba bilang untuk!",
+      "folder": 1,
+      "track": 104,
+      "duration_ms": 3431,
+      "sha256": "e3690e5d8487105c",
+      "voice": "gtts"
+    },
+    {
+      "phoneme": "U",
+      "variant": 4,
+      "text": "Uuu hebat! Ayo coba lagi!",
+      "folder": 1,
+      "track": 105,
+      "duration_ms": 3551,
+      "sha256": "ed52393e0c547b6a",
+      "voice": "gtts"
+    }
+  ]
+}
