@@ -118,10 +118,14 @@ Only changed phrases are re-synthesized, so editing one template costs one API c
 
 ## Deploying
 
-Full walkthrough in [deploy/orangepi/SETUP.md](deploy/orangepi/SETUP.md). In short:
+Full walkthrough in [deploy/orangepi/SETUP.md](deploy/orangepi/SETUP.md). On the Pi:
 
 ```bash
-sudo ./deploy/orangepi/install.sh
+git clone https://github.com/benedictnareswara/SpeechDelayLLM.git ~/SpeechDelayLLM
+```
+
+```bash
+cd ~/SpeechDelayLLM && sudo ./deploy/orangepi/install.sh
 ```
 
 Then work the milestones in order — **benchmark first**, since Whisper is the entire latency budget on an A53:

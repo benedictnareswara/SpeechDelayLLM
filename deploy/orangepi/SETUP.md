@@ -357,20 +357,44 @@ Before applying power, check continuity with a multimeter: Pi pin 6 ↔ DFPlayer
 
 ## Phase 7 — Install the software
 
-Copy the project to the Pi:
+The Pi needs network for this phase only. Everything after it runs offline.
+
+```bash
+sudo apt update && sudo apt install -y git
+```
+
+```bash
+git clone https://github.com/benedictnareswara/SpeechDelayLLM.git ~/SpeechDelayLLM
+```
+
+```bash
+cd ~/SpeechDelayLLM && sudo ./deploy/orangepi/install.sh
+```
+
+The clone deliberately does **not** include the rendered MP3s — they're gitignored, because they belong on the DFPlayer's card, not the Pi. What it does include is `assets/bank/manifest.json`, the index the device validates against at boot. If the manifest and `templates.py` ever disagree, the device refuses to start rather than playing the wrong phrase for a child's sound.
+
+<details>
+<summary>Alternative: copy from your Mac instead of cloning</summary>
+
+Useful when you have local changes that aren't pushed yet:
 
 ```bash
 rsync -av --exclude '.venv' --exclude '.git' --exclude 'assets/bank/01' --exclude 'assets/bank/02' \
     ~/Project/LLM/SpeechDelayLLM/ orangepi@<the-ip>:~/SpeechDelayLLM/
 ```
+</details>
 
-The rendered MP3s are excluded deliberately — they live on the DFPlayer's card, not the Pi. The **manifest** is included, and the device validates against it at boot.
+### Updating later
 
-On the Pi:
+After you push changes from your Mac:
 
 ```bash
-cd ~/SpeechDelayLLM && sudo ./deploy/orangepi/install.sh
+cd ~/SpeechDelayLLM && git pull && sudo ./deploy/orangepi/install.sh
 ```
+
+`install.sh` is idempotent — safe to re-run. It preserves your existing `/etc/speechllm/device.env`, so tuning you've done on the device survives an update.
+
+> If you changed `routing/templates.py`, you must also **re-render the bank and re-burn the DFPlayer card** (Phase 4). Pulling new code alone will leave the card stale and the device will refuse to start.
 
 ### Stage the models while you still have network
 
