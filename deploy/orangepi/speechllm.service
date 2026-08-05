@@ -4,6 +4,12 @@ Documentation=file:/opt/speechllm/CLAUDE.md
 After=sound.target
 # No network dependency on purpose: this unit is designed to work with WiFi off.
 
+# If it crash-loops 5 times in 5 minutes, stop and leave the logs intact rather
+# than hammering the SD card with restarts. These belong in [Unit]; systemd has
+# ignored them in [Service] since v229.
+StartLimitBurst=5
+StartLimitIntervalSec=300
+
 [Service]
 Type=simple
 User=speechllm
@@ -18,10 +24,6 @@ ExecStart=/opt/speechllm/.venv/bin/python -m speechllm_device
 TimeoutStartSec=120
 Restart=always
 RestartSec=5
-# If it crash-loops 5 times in 5 minutes, stop and leave the logs intact rather
-# than hammering the SD card with restarts.
-StartLimitBurst=5
-StartLimitIntervalSec=300
 
 StandardOutput=journal
 StandardError=journal

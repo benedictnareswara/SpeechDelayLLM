@@ -18,9 +18,10 @@ from speechllm_core.routing.router import TherapyResponse
 class UnspeakableResponse(RuntimeError):
     """The sink has no audio for this response.
 
-    Raised by the DFPlayer sink for runtime-generated text (Gemini), which has
-    no pre-rendered track on the SD card. Callers should fall back to a
-    template response rather than leaving the child with silence.
+    Raised by the DFPlayer sink for a response with no pre-rendered track on
+    the SD card — in practice, a manifest that has drifted from templates.py.
+    Callers should surface an error tone rather than leaving the child with
+    silence.
     """
 
 

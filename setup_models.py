@@ -6,21 +6,31 @@ Uses only Python stdlib — no wget, curl, or other dependencies needed.
 
 Models:
   1. Silero VAD ONNX (~2MB)   → downloaded here into models/
-  2. Whisper tiny (~75MB)     → auto-downloaded by faster-whisper on first use
-                                 cached to ~/.cache/huggingface/ (or $HF_HOME)
+  2. Whisper (~75MB for tiny) → fetched by faster-whisper into $HF_HOME
 
 On an offline device, run this once while it still has network, or copy the
 models/ directory and the HuggingFace cache across from a laptop.
 
+⚠️ Set HF_HOME to the same path the service uses (device.env pins
+/opt/speechllm/models/hf). Staged anywhere else, the service — which runs as a
+different user with HF_HUB_OFFLINE=1 and ProtectHome=true — cannot read it, and
+the failure only surfaces at the first transcription.
+
 Usage:
-    python setup_models.py
+    HF_HOME=/opt/speechllm/models/hf python setup_models.py
 """
 
+import os
 import sys
 import urllib.request
 from pathlib import Path
 
 MODELS_DIR = Path(__file__).parent / "models"
+
+# Match the runtime. Staging "tiny" while the device is configured for "base"
+# means the first transcription tries to download in offline mode and fails.
+MODEL_SIZE = os.getenv("STT_MODEL_SIZE", "tiny")
+COMPUTE_TYPE = os.getenv("STT_COMPUTE_TYPE", "int8")
 
 SILERO_URL = (
     "https://github.com/snakers4/silero-vad/raw/master/"
@@ -77,21 +87,28 @@ def main():
     else:
         download_with_progress(SILERO_URL, silero_dest, "Silero VAD")
 
-    # ── Step 2: Whisper tiny (auto-downloaded on first use) ───
-    print_step("Step 2/2 — Whisper Tiny Indonesian Model (~75MB)")
-    print("  This model is managed by faster-whisper and will be")
-    print("  auto-downloaded to ~/.cache/huggingface/ on first use.")
-    print()
-    print("  Pre-downloading now to avoid delay on first API call...")
+    # ── Step 2: Whisper weights ──────────────────────────────
+    hf_home = os.getenv("HF_HOME")
+    print_step(f"Step 2/2 — Whisper '{MODEL_SIZE}' ({COMPUTE_TYPE})")
+    if hf_home:
+        print(f"  Cache: {hf_home}")
+    else:
+        print("  ⚠️ HF_HOME is not set — caching to ~/.cache/huggingface/.")
+        print("     On the device this must match device.env, or the service")
+        print("     will not find these weights. Re-run as:")
+        print("       HF_HOME=/opt/speechllm/models/hf python setup_models.py")
 
+    ok = True
     try:
         from faster_whisper import WhisperModel
-        print("  Loading tiny model (downloading if not cached)...")
-        _ = WhisperModel("tiny", device="cpu", compute_type="int8")
-        print("  ✅ Whisper tiny model ready")
+        print(f"  Loading '{MODEL_SIZE}' (downloading if not cached)...")
+        _ = WhisperModel(MODEL_SIZE, device="cpu", compute_type=COMPUTE_TYPE)
+        print(f"  ✅ Whisper '{MODEL_SIZE}' ready")
     except Exception as e:
+        ok = False
         print(f"  ❌ Whisper model setup failed: {e}")
-        print("     It will be downloaded automatically on first use.")
+        print("     The device runs offline (HF_HUB_OFFLINE=1), so this will")
+        print("     NOT resolve itself on first use. Fix it before Milestone 5.")
 
     # ── Done ─────────────────────────────────────────────────
     print("\n" + "═" * 55)
@@ -100,14 +117,14 @@ def main():
     print()
     print("  Models:")
     for f in sorted(MODELS_DIR.iterdir()):
-        print(f"    📄 {f.name}  ({f.stat().st_size / 1_000_000:.1f} MB)")
-    print("    📁 Whisper tiny → ~/.cache/huggingface/ (auto-managed)")
+        if f.is_file():
+            print(f"    📄 {f.name}  ({f.stat().st_size / 1_000_000:.1f} MB)")
+    print(f"    📁 Whisper '{MODEL_SIZE}' → {hf_home or '~/.cache/huggingface/'}")
     print()
-    print("  Next steps:")
-    print("    laptop:  uvicorn speechllm_server.main:app --reload")
-    print("    device:  python -m speechllm_device --dry-run -v")
+    print("  Next:  python -m speechllm_device --dry-run -v")
     print()
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

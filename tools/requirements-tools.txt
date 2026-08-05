@@ -2,8 +2,8 @@
 #
 #   pip install -r tools/requirements-tools.txt
 #
-# These render the phrase bank and draft new phrases. The Orange Pi has no
-# network at runtime and needs none of them.
+# These render the phrase bank. The Orange Pi has no network at runtime and
+# needs none of them.
 
 # ── Text-to-speech for rendering the bank ────────────────────
 # Free, no key, unofficial endpoint. Good enough for a prototype.
@@ -13,12 +13,8 @@ gTTS>=2.5.3
 #   python tools/render_bank.py --voice google-cloud
 google-cloud-texttospeech>=2.16.0
 
-# ── Phrase authoring ─────────────────────────────────────────
-# tools/expand_bank.py drafts new template variants for human review.
-google-generativeai>=0.8.0
-python-dotenv>=1.0.1
-
 # Note: ffmpeg and ffprobe are also required for loudness normalization and
 # duration probing. Install them with your package manager, not pip:
-#   macOS:  brew install ffmpeg
-#   Ubuntu: sudo apt install ffmpeg
+#   Windows: winget install Gyan.FFmpeg
+#   macOS:   brew install ffmpeg
+#   Ubuntu:  sudo apt install ffmpeg

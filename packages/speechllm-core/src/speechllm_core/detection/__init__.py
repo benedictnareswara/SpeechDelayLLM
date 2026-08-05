@@ -1,5 +1,5 @@
-"""Canonical phoneme extraction from recognized text."""
+"""Canonical phoneme extraction from recognized text.
 
-from speechllm_core.detection.phonemes import PhonemeResult, extract_phoneme
-
-__all__ = ["PhonemeResult", "extract_phoneme"]
+Import from `speechllm_core.detection.phonemes` directly — this package
+deliberately re-exports nothing.
+"""

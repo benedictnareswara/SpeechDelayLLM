@@ -91,21 +91,6 @@ class BankManifest:
                 return t.track
         raise KeyError(f"No track for phoneme={phoneme!r} variant={variant}")
 
-    def variants_for(self, phoneme: str) -> list[Track]:
-        return [t for t in self.tracks if t.phoneme == phoneme]
-
-    def track_for_text(self, text: str) -> Track | None:
-        """Reverse lookup: the router picks a phrase string, we need its track.
-
-        Exact match on the rendered text. Returns None when the phrase is not
-        in the bank (a Gemini-generated line, for instance), which the caller
-        must treat as "cannot speak this".
-        """
-        for t in self.tracks:
-            if t.text == text:
-                return t
-        return None
-
     # ── Validation ───────────────────────────────────────────
 
     def validate_against_templates(self) -> list[str]:

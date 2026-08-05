@@ -1,8 +1,7 @@
 """
 SpeechLLM — Application Settings
 
-Replaces the old flat `config.py`. Values come from environment variables
-(loaded from a .env file when present), with defaults tuned for local
+Values come from environment variables, with defaults tuned for local
 development on a laptop.
 
 The device overrides these via `deploy/orangepi/device.env`, which systemd
@@ -25,22 +24,6 @@ from pathlib import Path
 # The device install sets that variable — a wheel in site-packages has no repo
 # above it, and asset paths would silently resolve into /usr.
 REPO_ROOT = Path(os.getenv("SPEECHLLM_ROOT") or Path(__file__).resolve().parents[4])
-
-
-def _load_dotenv() -> None:
-    """Load .env from the repo root if python-dotenv is available.
-
-    Kept optional so the device package doesn't need python-dotenv — systemd
-    supplies the environment there.
-    """
-    try:
-        from dotenv import load_dotenv
-    except ImportError:
-        return
-    load_dotenv(REPO_ROOT / ".env")
-
-
-_load_dotenv()
 
 
 def _env_str(key: str, default: str) -> str:
@@ -104,33 +87,7 @@ class Settings:
         default_factory=lambda: _env_int("PHONEME_FUZZY_MAX_DISTANCE", 1)
     )
 
-    # ── Semantic router ──────────────────────────────────────
-    # 0 on the device: offline builds never call Gemini.
-    gemini_usage_percent: int = field(
-        default_factory=lambda: _env_int("GEMINI_USAGE_PERCENT", 30)
-    )
-
-    # ── Gemini (build-time tooling and the dev server only) ──
-    google_api_key: str = field(default_factory=lambda: _env_str("GOOGLE_API_KEY", ""))
-    gemini_model: str = field(
-        default_factory=lambda: _env_str("GEMINI_MODEL", "gemini-2.5-flash-lite")
-    )
-    gemini_timeout_s: float = field(
-        default_factory=lambda: _env_float("GEMINI_TIMEOUT_MS", 2000.0) / 1000.0
-    )
-    gemini_temperature: float = field(
-        default_factory=lambda: _env_float("GEMINI_TEMPERATURE", 0.7)
-    )
-    gemini_max_output_tokens: int = 40
-
-    # ── Response filter ──────────────────────────────────────
-    max_response_words: int = 10   # speech therapy constraint
-    min_response_words: int = 2    # too short = probably garbage
-
     # ── Phrase bank ──────────────────────────────────────────
-    bank_dir: Path = field(
-        default_factory=lambda: _env_path("BANK_DIR", REPO_ROOT / "assets" / "bank")
-    )
     bank_manifest: Path = field(
         default_factory=lambda: _env_path(
             "BANK_MANIFEST", REPO_ROOT / "assets" / "bank" / "manifest.json"
@@ -165,10 +122,6 @@ class Settings:
             "INTERACTION_LOG", REPO_ROOT / "logs" / "interactions.jsonl"
         )
     )
-
-    # ── Dev server ───────────────────────────────────────────
-    api_host: str = field(default_factory=lambda: _env_str("API_HOST", "0.0.0.0"))
-    api_port: int = field(default_factory=lambda: _env_int("API_PORT", 8000))
 
     @property
     def frame_duration_ms(self) -> float:

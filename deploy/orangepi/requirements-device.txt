@@ -1,7 +1,7 @@
-# Pinned aarch64 / Python 3.10 dependencies for the Orange Pi Zero 3.
+# Dependencies for the Orange Pi Zero 3 (aarch64 / Python 3.10).
 #
-# ⚠️ THESE PINS ARE UNVERIFIED. Resolving them on the actual board is
-# Milestone 0 — do it before writing any pipeline code.
+# ⚠️ THE DIRECT PINS ARE STILL UNVERIFIED on the board. Resolving them is
+# Milestone 0. The *transitive* pins below are not optional — see the note.
 #
 # Known risks to check on-device:
 #   * onnxruntime — aarch64 manylinux wheels exist but lag x86 releases;
@@ -11,8 +11,11 @@
 #   * soxr — has aarch64 wheels; falls back to a slow source build if not.
 #
 # Once `pip install -r` succeeds and tools/bench_device.py runs, freeze the
-# resolved set over this file:
-#     pip freeze | grep -Ei 'numpy|onnxruntime|faster-whisper|ctranslate2|sounddevice|soxr|pyserial|levenshtein'
+# WHOLE resolved set over this file, transitive packages included:
+#     /opt/speechllm/.venv/bin/pip freeze > deploy/orangepi/requirements-device.txt
+# Do not freeze only the direct packages. The two failures that cost a day of
+# bring-up (rapidfuzz, PyYAML) were both transitive and both invisible to a
+# `pip freeze | grep` of the direct names.
 
 numpy>=1.24,<2.0
 onnxruntime>=1.16
@@ -20,4 +23,19 @@ faster-whisper>=1.0.0
 sounddevice>=0.4.7
 soxr>=0.3.7
 pyserial>=3.5
-python-Levenshtein>=0.25.1
+
+# ── Transitive pins ──────────────────────────────────────────
+# faster-whisper pulls huggingface-hub, which pulls PyYAML. An unconstrained
+# resolve picked huggingface-hub 1.x, a major version that faster-whisper 1.2
+# predates, and model staging died with:
+#     Error importing huggingface_hub._snapshot_download:
+#     module 'yaml' has no attribute 'dump'
+huggingface-hub>=0.21,<1.0
+PyYAML>=6.0,<7
+
+# NOTE: python-Levenshtein was removed deliberately. Its only use was one
+# two-argument edit-distance call, now a stdlib DP in
+# speechllm_core/detection/phonemes.py. It dragged in the rapidfuzz C
+# extension, which arrived damaged on this board and failed with
+#     ImportError: cannot import name 'Editops' from 'rapidfuzz.distance'
+# Do not add it back.

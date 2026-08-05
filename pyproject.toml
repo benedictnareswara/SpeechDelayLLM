@@ -9,12 +9,10 @@ requires-python = ">=3.10"
 #
 #   pip install -e packages/speechllm-core
 #   pip install -e packages/speechllm-device   # Orange Pi only
-#   pip install -e packages/speechllm-server   # laptop only
 #   pip install -r tools/requirements-tools.txt
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-asyncio_mode = "strict"
 markers = [
     "hardware: requires the Orange Pi, DFPlayer or a microphone (deselect with -m 'not hardware')",
 ]
@@ -26,9 +24,3 @@ target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
-
-[tool.ruff.lint.per-file-ignores]
-# Few-shot examples and filter test cases are Indonesian sentences quoted
-# verbatim. Wrapping them would obscure what is actually sent to the model.
-"packages/speechllm-core/src/speechllm_core/generation/prompts.py" = ["E501"]
-"tests/test_response_filter.py" = ["E501"]

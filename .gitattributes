@@ -1,0 +1,27 @@
+# The build host is Windows; the target is Linux. Git for Windows defaults to
+# core.autocrlf=true, which would check these out with CRLF endings. A shell
+# script with CRLF fails on the Pi as:
+#
+#     /bin/bash^M: bad interpreter: No such file or directory
+#
+# and systemd/ALSA silently mis-parse config values with a trailing \r. Pin the
+# line endings for everything that the Pi reads, regardless of host.
+
+* text=auto
+
+*.sh            text eol=lf
+*.py            text eol=lf
+*.service       text eol=lf
+*.conf          text eol=lf
+*.env           text eol=lf
+*.toml          text eol=lf
+*.txt           text eol=lf
+*.md            text eol=lf
+*.json          text eol=lf
+
+deploy/orangepi/device.env text eol=lf
+
+# Rendered audio is binary; never let Git touch it.
+*.mp3           binary
+*.wav           binary
+*.onnx          binary

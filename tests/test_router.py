@@ -8,7 +8,7 @@ import pytest
 from speechllm_core.detection.phonemes import PhonemeResult
 from speechllm_core.routing.intents import INTENT_REGISTRY, get_intent
 from speechllm_core.routing.router import SemanticRouter
-from speechllm_core.routing.templates import TEMPLATES, pick_template
+from speechllm_core.routing.templates import TEMPLATES, pick_template_variant
 
 
 class TestIntentMap:
@@ -60,10 +60,18 @@ class TestTemplates:
                     f"{phoneme}: '{template}' has {word_count} words (max 10)"
                 )
 
-    def test_pick_template_returns_string(self):
-        result = pick_template("MA")
-        assert isinstance(result, str)
-        assert len(result) > 0
+    def test_pick_template_variant_identifies_its_own_choice(self):
+        resolved, variant, text = pick_template_variant("MA")
+        assert resolved == "MA"
+        # The variant index must actually address the text that was returned —
+        # the device looks up the SD-card track by (phoneme, variant), so a
+        # mismatch here would play a different phrase than the one chosen.
+        assert TEMPLATES[resolved][variant] == text
+
+    def test_unknown_phoneme_resolves_to_noise_pool(self):
+        resolved, variant, text = pick_template_variant("NOT_A_PHONEME")
+        assert resolved == "NOISE"
+        assert TEMPLATES["NOISE"][variant] == text
 
 
 class TestSemanticRouter:
@@ -71,32 +79,38 @@ class TestSemanticRouter:
 
     @pytest.fixture
     def router(self):
-        return SemanticRouter(gemini_client=None)  # template-only mode
+        return SemanticRouter()
 
-    @pytest.mark.asyncio
-    async def test_route_known_phoneme(self, router):
+    def test_route_known_phoneme(self, router):
         phoneme = PhonemeResult(phoneme="MA", confidence=0.9, raw_text="ma", category="syllable")
-        response = await router.route(phoneme)
+        response = router.route(phoneme)
         assert response.source == "template"
         assert response.phoneme == "MA"
         assert response.technique == "modeling"
 
-    @pytest.mark.asyncio
-    async def test_route_noise_returns_fallback(self, router):
+    def test_route_noise_returns_fallback(self, router):
         phoneme = PhonemeResult(phoneme="NOISE", confidence=0.1, raw_text="", category="noise")
-        response = await router.route(phoneme)
+        response = router.route(phoneme)
         assert response.source == "fallback"
         assert response.intent_category == "noise_fallback"
 
-    @pytest.mark.asyncio
-    async def test_route_low_confidence_returns_fallback(self, router):
+    def test_route_low_confidence_returns_fallback(self, router):
         phoneme = PhonemeResult(phoneme="MA", confidence=0.1, raw_text="ma", category="syllable")
-        response = await router.route(phoneme)
+        response = router.route(phoneme)
         assert response.source == "fallback"
 
-    @pytest.mark.asyncio
-    async def test_response_has_latency(self, router):
+    def test_response_has_latency(self, router):
         phoneme = PhonemeResult(phoneme="A", confidence=0.9, raw_text="a", category="vowel")
-        response = await router.route(phoneme)
+        response = router.route(phoneme)
         assert response.latency_ms >= 0
         assert response.latency_ms < 100  # templates should be < 1ms
+
+    def test_every_response_is_playable_from_the_card(self, router):
+        """Every route must name a bank position, or the DFPlayer has nothing
+        to play. This is the invariant that replaced the Gemini branch."""
+        for label in ("MA", "A", "SUSU", "NOISE", "NOT_A_PHONEME"):
+            response = router.route(
+                PhonemeResult(phoneme=label, confidence=0.9, raw_text="x", category="syllable")
+            )
+            assert response.bank_phoneme in TEMPLATES
+            assert 0 <= response.bank_variant < len(TEMPLATES[response.bank_phoneme])

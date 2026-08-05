@@ -12,21 +12,20 @@ Audio output is a **DFPlayer Mini**, which plays numbered MP3s from its own micr
 
 So the phrase bank (exactly **105 phrases**: 21 phonemes × 5 variants in `routing/templates.py`) is **rendered to MP3 once at build time on a laptop** and burned to the card. At runtime the device only chooses a track number. Consequences that shape the whole codebase:
 
-- The device needs **no API keys and no internet**. `google-generativeai`, `gTTS`, `fastapi` are deliberately *not* device dependencies.
-- Gemini is a **build-time authoring tool** (`tools/expand_bank.py`), never a runtime dependency. A human reviews every phrase before a child hears it.
-- `speechllm_core.generation` still exists and is exercised by the dev server, but the device never imports it.
+- The device needs **no API keys and no internet**, and there is no cloud client, HTTP server, or key handling left in the repo — that code was deleted, not merely disabled.
+- `SemanticRouter.route()` is a synchronous lookup returning a `(bank_phoneme, bank_variant)` pair.
 - A response with no pre-rendered track raises `UnspeakableResponse` rather than playing something arbitrary.
+- `speechllm-core` has **zero third-party dependencies**. Keep it that way: the last one (`python-Levenshtein`) pulled in a rapidfuzz C extension that arrived damaged on the Pi, and it was replaced by a 20-line DP in `detection/phonemes.py`.
 
 ## Layout
 
-Three installable packages. `core` is pure logic — no hardware, no I/O — so it stays testable on a laptop.
+Two installable packages. `core` is pure logic — no hardware, no I/O — so it stays testable on a laptop.
 
 ```
-packages/speechllm-core/      detection, routing, generation, bank numbering
+packages/speechllm-core/      detection, routing, bank numbering (stdlib only)
 packages/speechllm-device/    Orange Pi app: capture, VAD, STT, pipeline, hardware, sinks
-packages/speechllm-server/    FastAPI dev harness (laptop only, not deployed)
 tools/                        build-time: render_bank, verify_bank, bench_device
-deploy/orangepi/              install.sh, systemd unit, device.env, asound.conf
+deploy/orangepi/              install.sh, doctor.sh, systemd unit, device.env, asound.conf
 assets/bank/manifest.json     committed index of what is on the SD card
 ```
 
@@ -36,8 +35,7 @@ Setup (needs Python ≥3.10; the macOS system Python 3.9 is too old):
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
-pip install -e packages/speechllm-core -e packages/speechllm-server
-pip install pytest pytest-asyncio
+pip install -e packages/speechllm-core && pip install pytest ruff
 ```
 
 Tests — run from the repo root:
@@ -54,10 +52,10 @@ pytest tests/test_orchestrator.py::TestMicGating -v
 pytest -m "not hardware"          # skip anything needing the board
 ```
 
-Dev server (laptop):
+Lint:
 
 ```bash
-uvicorn speechllm_server.main:app --reload
+ruff check .
 ```
 
 Phrase bank:
@@ -82,7 +80,7 @@ python tools/bench_device.py
 
 **`core/detection/phonemes.py`** is the semantic chokepoint. Recognizer text → one of ~21 canonical labels via exact `PHONEME_MAP` lookup, then Levenshtein fuzzy match (≤5 chars only, confidence scaled down 0.3 per edit), then first-word recursion, then `NOISE`.
 
-**`core/routing/`** — `INTENT_REGISTRY` maps each phoneme to a `TherapeuticIntent`; `SemanticRouter.route()` is the single entry point for the response path. It rejects `NOISE` and anything below `phoneme_confidence_threshold`, then rolls `gemini_usage_percent` (0 on the device) to choose Gemini vs template. Any Gemini failure falls through to a template — the child never gets an error.
+**`core/routing/`** — `INTENT_REGISTRY` maps each phoneme to a `TherapeuticIntent`; `SemanticRouter.route()` is the single entry point for the response path. It rejects `NOISE` and anything below `phoneme_confidence_threshold`, then picks a template variant.
 
 `pick_template_variant()` returns `(resolved_phoneme, variant_index, text)` and the router records it on `TherapyResponse.bank_phoneme` / `.bank_variant`. **The device maps a response to a track by that pair, never by matching the text** — two pools can share phrasing. `resolved_phoneme` differs from the input when an unknown label falls back to the NOISE pool, and the track lookup depends on knowing that.
 
@@ -90,7 +88,7 @@ python tools/bench_device.py
 
 **`device/pipeline/segmenter.py`** is the endpointing state machine (SILENT ↔ SPEAKING) that turns per-frame VAD decisions into utterances. It finally consumes `vad_min_speech_ms` / `vad_max_speech_ms` / `vad_silence_ms`, which were dead config before. Note the **pre-roll ring buffer**: VAD takes a few frames to become confident, and without replaying those the initial consonant — exactly what separates "ma" from "a" — gets clipped.
 
-**`device/pipeline/orchestrator.py`** is the main loop: capture → VAD → segmenter → STT → phoneme → router → sink. Deliberately synchronous; `route()` is async only for the Gemini path the device never takes.
+**`device/pipeline/orchestrator.py`** is the main loop: capture → VAD → segmenter → STT → phoneme → router → sink. Deliberately synchronous throughout — there is no event loop anywhere in the runtime.
 
 ## Things that will bite you
 

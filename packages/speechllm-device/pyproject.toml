@@ -4,13 +4,18 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "speechllm-device"
-version = "0.2.0"
+version = "0.3.0"
 description = "SpeechLLM device application for the Orange Pi Zero 3"
 requires-python = ">=3.10"
 
-# Deliberately minimal and fully offline. No google-generativeai, no gTTS,
-# no fastapi. Versions are intentionally loose here; the tested aarch64 pins
-# live in deploy/orangepi/requirements-device.txt (see Milestone 0).
+# Deliberately minimal and fully offline: nothing here reaches the network at
+# runtime. Versions are intentionally loose; the tested aarch64 pins — including
+# the transitive ones that have actually broken a build — live in
+# deploy/orangepi/requirements-device.txt (see Milestone 0).
+#
+# gpiod is required for the preferred BUSY-pin backend but is NOT listed here:
+# it comes from apt (python3-libgpiod) and install.sh links it into the venv.
+# The PyPI `gpiod` package needs libgpiod 2.x, which Ubuntu Jammy does not ship.
 dependencies = [
     "speechllm-core",
     "numpy>=1.24",

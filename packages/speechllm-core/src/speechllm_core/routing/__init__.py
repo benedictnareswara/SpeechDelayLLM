@@ -1,6 +1,6 @@
-"""Deterministic semantic routing: intents, router, response templates."""
+"""Deterministic semantic routing: intents, router, response templates.
 
-from speechllm_core.routing.intents import TherapeuticIntent, get_intent
-from speechllm_core.routing.router import SemanticRouter, TherapyResponse
-
-__all__ = ["TherapeuticIntent", "get_intent", "SemanticRouter", "TherapyResponse"]
+Import from the submodules directly — this package deliberately re-exports
+nothing, so importing `speechllm_core.routing.templates` does not drag in the
+router.
+"""

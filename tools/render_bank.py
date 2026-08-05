@@ -20,14 +20,21 @@ Only changed phrases are re-synthesized: each file's source text is hashed and
 compared against the existing manifest, so editing one template costs one API
 call rather than 105.
 
-Copying to the card (see also deploy/orangepi/README):
+Copying to the card — FAT32, MBR, <=32GB. Full instructions in
+deploy/orangepi/SETUP.md Phase 4.
 
-    diskutil eraseDisk FAT32 BANK MBRFormat /dev/diskN
-    cp -R assets/bank/01 assets/bank/02 /Volumes/BANK/
-    dot_clean /Volumes/BANK && find /Volumes/BANK -name '._*' -delete
+    Windows (admin PowerShell):
+        diskpart  ->  clean / create partition primary / format fs=fat32
+        robocopy .\\assets\\bank\\01 E:\\01 /E
+        robocopy .\\assets\\bank\\02 E:\\02 /E
+
+    macOS:
+        diskutil eraseDisk FAT32 BANK MBRFormat /dev/diskN
+        cp -R assets/bank/01 assets/bank/02 /Volumes/BANK/
+        dot_clean /Volumes/BANK && find /Volumes/BANK -name '._*' -delete
 
 That last step is not optional on macOS. Finder writes AppleDouble `._` files
-that the DFPlayer counts as tracks.
+that the DFPlayer counts as tracks, shifting every index.
 """
 
 from __future__ import annotations
@@ -295,8 +302,8 @@ def main(argv: list[str] | None = None) -> int:
         f"\n✅ {len(tracks)} tracks ({rendered} rendered, {reused} reused), "
         f"{total_s:.0f}s of audio\n   manifest → {manifest_path}"
     )
-    print("\nNext: copy assets/bank/01 and 02 to a FAT32 card, then strip macOS metadata:")
-    print("   dot_clean /Volumes/BANK && find /Volumes/BANK -name '._*' -delete")
+    print("\nNext: copy assets/bank/01 and 02 to a FAT32/MBR card (SETUP.md Phase 4),")
+    print("      then verify it:  python tools/verify_bank.py --card <card path>")
     return 0
 
 

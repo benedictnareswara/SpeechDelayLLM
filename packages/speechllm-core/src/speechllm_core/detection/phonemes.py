@@ -20,11 +20,43 @@ At this stage, children typically produce:
 import logging
 from dataclasses import dataclass
 
-from Levenshtein import distance as levenshtein_distance
-
 from speechllm_core.settings import settings
 
 logger = logging.getLogger(__name__)
+
+
+def levenshtein_distance(a: str, b: str) -> int:
+    """Edit distance between two short strings.
+
+    Hand-rolled rather than pulled from python-Levenshtein. That package's only
+    use here was this one two-argument call, and it drags in the rapidfuzz C
+    extension — a native wheel that has to build on aarch64 and has already
+    broken one Orange Pi install. Without it `speechllm-core` has no
+    third-party dependencies at all.
+
+    Inputs are capped at 5 characters against keys of at most 6, so the two-row
+    DP is free next to Whisper's 0.8–2.5 s.
+    """
+    if a == b:
+        return 0
+    if not a:
+        return len(b)
+    if not b:
+        return len(a)
+
+    previous = list(range(len(b) + 1))
+    for i, char_a in enumerate(a, start=1):
+        current = [i]
+        for j, char_b in enumerate(b, start=1):
+            current.append(
+                min(
+                    previous[j] + 1,                      # deletion
+                    current[j - 1] + 1,                   # insertion
+                    previous[j - 1] + (char_a != char_b),  # substitution
+                )
+            )
+        previous = current
+    return previous[-1]
 
 
 @dataclass

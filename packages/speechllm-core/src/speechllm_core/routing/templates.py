@@ -198,16 +198,6 @@ def pick_template_variant(phoneme: str) -> tuple[str, int, str]:
     return resolved, index, pool[index]
 
 
-def pick_template(phoneme: str) -> str:
-    """Pick a random response template for the given phoneme."""
-    return pick_template_variant(phoneme)[2]
-
-
 def get_noise_fallback_variant() -> tuple[str, int, str]:
     """Gentle fallback for unrecognized sounds, with its variant index."""
     return pick_template_variant("NOISE")
-
-
-def get_noise_fallback() -> str:
-    """Get a gentle fallback response for unrecognized sounds."""
-    return get_noise_fallback_variant()[2]

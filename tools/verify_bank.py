@@ -105,16 +105,25 @@ def check_card(card: Path, manifest_path: Path) -> list[str]:
             if not path.exists():
                 problems.append(f"missing ui sound on card: {path.name} ({name})")
 
-    # AppleDouble and Spotlight leftovers are counted as tracks by the DFPlayer.
+    # Host-OS leftovers. macOS AppleDouble files are the dangerous ones — the
+    # DFPlayer counts them as tracks and every index shifts. The Windows ones
+    # are harmless while we address tracks by filename (command 0x0F), but they
+    # waste space and make the card confusing to inspect, so flag them too.
     junk = [p for p in card.rglob("._*")]
     junk += [p for p in card.rglob(".DS_Store")]
     junk += [p for p in card.glob(".Spotlight-V100")]
     junk += [p for p in card.glob(".Trashes")]
+    junk += [p for p in card.rglob("Thumbs.db")]
+    junk += [p for p in card.rglob("desktop.ini")]
+    junk += [p for p in card.glob("System Volume Information")]
+    junk += [p for p in card.glob("$RECYCLE.BIN")]
     if junk:
+        names = ", ".join(sorted({p.name for p in junk})[:5])
         problems.append(
-            f"{len(junk)} stray macOS file(s) on the card will shift DFPlayer track indexes. Fix:\n"
-            f"      dot_clean {card} && find {card} -name '._*' -delete && "
-            f"find {card} -name '.DS_Store' -delete"
+            f"{len(junk)} stray host-OS file(s) on the card ({names}). Fix:\n"
+            f"      macOS:   dot_clean {card} && find {card} -name '._*' -delete && "
+            f"find {card} -name '.DS_Store' -delete\n"
+            f"      Windows: attrib -h -s {card}* /S /D, then delete them in Explorer"
         )
 
     for path in sorted(card.rglob("*.mp3")):

@@ -26,15 +26,13 @@ DFPlayer's BUSY line clears, a cooldown covers the acoustic tail, and the
 capture queue is drained so buffered audio from the speaking window is
 discarded rather than processed late.
 
-The loop is deliberately synchronous. Router.route() is async only because of
-the optional Gemini path, which this device never takes; a single-threaded loop
-with explicit blocking is far easier to reason about on hardware than an
-event loop juggling a blocking ONNX call and a blocking serial write.
+The loop is deliberately synchronous: a single-threaded loop with explicit
+blocking is far easier to reason about on hardware than an event loop juggling
+a blocking ONNX call and a blocking serial write.
 """
 
 from __future__ import annotations
 
-import asyncio
 import json
 import logging
 import time
@@ -186,7 +184,7 @@ class Orchestrator:
         # hallucinated word.
         confidence = min(recognition.confidence, utterance.peak_confidence)
         phoneme_result = extract_phoneme(recognition.text, confidence)
-        response = asyncio.run(self._router.route(phoneme_result))
+        response = self._router.route(phoneme_result)
 
         if response.source == "fallback":
             self.stats.noise_rejects += 1
@@ -196,7 +194,8 @@ class Orchestrator:
             self._sink.speak(response)
             self.stats.responses += 1
         except UnspeakableResponse as e:
-            # Only reachable if Gemini is enabled on a DFPlayer-only unit.
+            # Should be unreachable: every response now carries a bank position.
+            # Kept so a stale manifest fails loudly instead of playing silence.
             logger.error("Cannot speak response: %s", e)
             self.stats.unspeakable += 1
             self._sink.play_ui(UiSound.ERROR)

@@ -8,10 +8,9 @@ The mapping is by `(bank_phoneme, bank_variant)` — the router reports exactly
 which template variant it chose — not by matching the response text. Text
 matching would break as soon as two phrases in different pools shared wording.
 
-Responses with no bank position (Gemini-generated text) raise
-UnspeakableResponse: this device has no runtime text-to-speech, and silently
-playing an unrelated phrase would be worse than telling the caller to retry
-with a template.
+Responses with no bank position raise UnspeakableResponse: this device has no
+runtime text-to-speech, and silently playing an unrelated phrase would be worse
+than reporting the failure.
 """
 
 from __future__ import annotations

@@ -127,7 +127,7 @@ def main(argv: list[str] | None = None) -> int:
     from speechllm_device.input.capture import AudioCapture, AudioDeviceError
     from speechllm_device.pipeline.orchestrator import Orchestrator
 
-    router = SemanticRouter(gemini_client=None)  # offline: templates only
+    router = SemanticRouter()
 
     try:
         capture = AudioCapture()

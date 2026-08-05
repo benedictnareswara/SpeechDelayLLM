@@ -28,20 +28,19 @@ That inversion is what makes the device work with zero network:
 | Voice quality | cloud TTS, rendered offline |
 | Phrase safety | every line human-reviewed before rendering |
 
-Gemini still has a role — as a **build-time authoring tool** that drafts new phrase variants for a human to review, never as a runtime dependency.
+There is no cloud code in the shipped system at all — no LLM client, no HTTP server, no key handling. The response path is a lookup.
 
 ## Layout
 
 ```
-packages/speechllm-core/     pure logic: detection, routing, generation, bank numbering
+packages/speechllm-core/     pure logic: detection, routing, bank numbering — zero dependencies
 packages/speechllm-device/   Orange Pi app: capture, VAD, STT, pipeline, hardware, sinks
-packages/speechllm-server/   FastAPI dev harness (laptop only)
 tools/                       build-time: render_bank, verify_bank, bench_device
-deploy/orangepi/             install.sh, systemd unit, wiring guide
+deploy/orangepi/             install.sh, doctor.sh, systemd unit, wiring guide
 assets/bank/manifest.json    committed index of what is on the SD card
 ```
 
-`core` has no hardware or I/O imports, so the whole routing pipeline is testable on a laptop with no board attached.
+`core` has no hardware or I/O imports **and no third-party dependencies**, so the whole routing pipeline is testable on a laptop with no board attached — and cannot fail to build on a device with no compiler.
 
 ## Quick start (laptop)
 
@@ -49,33 +48,19 @@ Requires Python 3.10+.
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
-pip install -e packages/speechllm-core -e packages/speechllm-server
-pip install pytest pytest-asyncio
+pip install -e packages/speechllm-core && pip install pytest ruff
 pytest tests/ -q
 ```
 
-Poke at the routing logic over HTTP:
+Try the routing logic directly:
 
 ```bash
-uvicorn speechllm_server.main:app --reload
-```
-
-```bash
-curl -X POST http://localhost:8000/process-text -H "Content-Type: application/json" -d '{"text": "ma"}'
-```
-
-```json
-{
-  "text": "Mama! Iya Mama di sini sayang!",
-  "source": "template",
-  "phoneme": "MA",
-  "intent_category": "syllable_modeling",
-  "technique": "modeling",
-  "latency_ms": 0.12,
-  "confidence": 0.9,
-  "bank_phoneme": "MA",
-  "bank_variant": 0
-}
+python -c "
+from speechllm_core.detection.phonemes import extract_phoneme
+from speechllm_core.routing.router import SemanticRouter
+r = SemanticRouter().route(extract_phoneme('ma', 0.9))
+print(r.text, '→ bank', r.bank_phoneme, r.bank_variant)
+"
 ```
 
 `bank_phoneme` + `bank_variant` are what the device turns into an SD-card track number.
@@ -91,9 +76,17 @@ python tools/render_bank.py --voice google-cloud   # better id-ID voices
 python tools/verify_bank.py
 ```
 
-Then copy to the DFPlayer's card (FAT32) and strip macOS metadata — **not optional**, since AppleDouble `._` files are counted as tracks:
+Then copy to the DFPlayer's card — FAT32 with an **MBR** partition table, ≤32 GB, laid out as `01/001.mp3 … 01/105.mp3` and `02/001.mp3 … 02/003.mp3`. Full per-OS instructions are in [SETUP.md Phase 4](deploy/orangepi/SETUP.md); the short version:
+
+```powershell
+# Windows: diskpart → clean → create partition primary → format fs=fat32
+robocopy .\assets\bank\01 E:\01 /E ; robocopy .\assets\bank\02 E:\02 /E
+python tools\verify_bank.py --card E:\
+```
 
 ```bash
+# macOS: stripping AppleDouble metadata is NOT optional — the DFPlayer counts ._ files as tracks
+diskutil eraseDisk FAT32 BANK MBRFormat /dev/diskN
 cp -R assets/bank/01 assets/bank/02 /Volumes/BANK/
 dot_clean /Volumes/BANK && find /Volumes/BANK -name '._*' -delete
 python tools/verify_bank.py --card /Volumes/BANK
@@ -128,13 +121,19 @@ git clone https://github.com/benedictnareswara/SpeechDelayLLM.git ~/SpeechDelayL
 cd ~/SpeechDelayLLM && sudo ./deploy/orangepi/install.sh
 ```
 
+Then check the whole install at once — it names the fix for anything that fails:
+
+```bash
+sudo ./deploy/orangepi/doctor.sh
+```
+
 Then work the milestones in order — **benchmark first**, since Whisper is the entire latency budget on an A53:
 
 ```bash
 python tools/bench_device.py                                      # M0
 python -m speechllm_device.hardware.dfplayer --folder 1 --track 1 # M3
 python -m speechllm_device --list-devices                         # M4
-python -m speechllm_device --verbose                              # M5, WiFi off
+python -m speechllm_device --verbose                              # M5, network unplugged
 sudo systemctl start speechllm                                    # M6
 ```
 
