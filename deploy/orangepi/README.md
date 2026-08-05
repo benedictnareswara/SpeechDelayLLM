@@ -117,17 +117,19 @@ Find the overlay your image actually ships — the name has changed across relea
 ls /boot/dtb/allwinner/overlay/ | grep -i uart
 ```
 
-`sun50i-h616-uart5.dtbo` → the overlay name is `uart5`; `sun50i-h616-uart5-ph.dtbo` → `uart5-ph`. It is **not** `ph-uart5`; U-Boot ignores an unknown overlay silently, giving you no error and no serial port.
+Strip the `sun50i-h616-` prefix and `.dtbo` suffix to get the overlay name. The official Orange Pi Jammy 6.1.31 image ships **`sun50i-h616-ph-uart5.dtbo` → `ph-uart5`**, where the `ph` prefix is the GPIO bank — UART5 on `PH2`/`PH3`, header pins 8 and 10.
+
+> Armbian builds for the same SoC name it `uart5-ph` or `uart5` instead. U-Boot ignores an unknown overlay silently — no error, no serial port — so always read the name off the `ls` rather than copying it from a guide.
 
 ```bash
-sudo orangepi-config     # System → Hardware → enable uart5 → reboot
+sudo orangepi-config     # System → Hardware → enable ph-uart5 → reboot
 ```
 
 Or in `/boot/orangepiEnv.txt`:
 
 ```
 overlay_prefix=sun50i-h616
-overlays=uart5
+overlays=ph-uart5
 ```
 
 Then verify both the node and the kernel's opinion of it:
@@ -216,7 +218,7 @@ sudo systemctl start speechllm && journalctl -u speechllm -f
 
 | Symptom | Cause |
 |---|---|
-| Serial port missing (`FileNotFoundError`, errno 2) | Overlay not enabled, no reboot, or the wrong overlay name — it's `uart5`, not `ph-uart5` |
+| Serial port missing (`FileNotFoundError`, errno 2) | Overlay not enabled, no reboot, or the wrong overlay name — read it off `ls /boot/dtb/allwinner/overlay/` |
 | Port exists but the DFPlayer never answers | `dmesg` shows `request() failed for pin 226` — pins already claimed; use a USB-TTL adapter |
 | Permission denied on the port (errno 13) | User not in `dialout`; log out and back in after `usermod` |
 | `bad interpreter: /bin/bash^M` | CRLF line endings from a Windows checkout; `.gitattributes` pins these to LF |

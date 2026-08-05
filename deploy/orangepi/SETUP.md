@@ -44,10 +44,12 @@ Confirm the filename starts with `Orangepizero3_` and the kernel is `6.1.x`. A `
 winget install 7zip.7zip Balena.Etcher Git.Git Python.Python.3.12 Gyan.FFmpeg
 ```
 
+Known-good as of this writing: `Orangepizero3_1.0.4_ubuntu_jammy_server_linux6.1.31.7z`. The version prefix moves; the `linux6.1.x` suffix is the part that must not.
+
 Extract the archive with 7-Zip (right-click → 7-Zip → Extract Here). You should get a `.img` file of several hundred MB. If the download page provided a checksum, verify it:
 
 ```powershell
-Get-FileHash -Algorithm SHA256 .\Orangepizero3_1.0.0_ubuntu_jammy_server_linux6.1.31.img
+Get-FileHash -Algorithm SHA256 .\Orangepizero3_1.0.4_ubuntu_jammy_server_linux6.1.31.img
 ```
 
 <details>
@@ -55,8 +57,8 @@ Get-FileHash -Algorithm SHA256 .\Orangepizero3_1.0.0_ubuntu_jammy_server_linux6.
 
 ```bash
 brew install p7zip ffmpeg
-7z x Orangepizero3_1.0.0_ubuntu_jammy_server_linux6.1.31.7z
-shasum -a 256 Orangepizero3_1.0.0_ubuntu_jammy_server_linux6.1.31.img
+7z x Orangepizero3_1.0.4_ubuntu_jammy_server_linux6.1.31.7z
+shasum -a 256 Orangepizero3_1.0.4_ubuntu_jammy_server_linux6.1.31.img
 ```
 </details>
 
@@ -152,9 +154,20 @@ Header pins 8 and 10 (`PH2`/`PH3`) only become a serial port once a device-tree 
 ls /boot/dtb/allwinner/overlay/ | grep -i uart
 ```
 
-You are looking for `sun50i-h616-uart5.dtbo` or `sun50i-h616-uart5-ph.dtbo`. The name you put in the config is that filename **without** the `sun50i-h616-` prefix and the `.dtbo` suffix — so `uart5` or `uart5-ph`.
+The overlay name is that filename with the `sun50i-h616-` prefix and `.dtbo` suffix stripped. On the official Orange Pi Jammy 6.1.31 image you get:
 
-> ⚠️ Earlier versions of this repo told you to use **`ph-uart5`**. That name does not exist. U-Boot ignores an unknown overlay silently, so you get no error and no serial port — exactly the symptom that sends you looking at the wiring instead of the config.
+```
+sun50i-h616-ph-uart5.dtbo   →  ph-uart5     ← the one you want
+sun50i-h616-ph-uart2.dtbo   →  ph-uart2
+sun50i-h616-pi-uart2.dtbo   →  pi-uart2
+sun50i-h616-pi-uart3.dtbo   →  pi-uart3
+sun50i-h616-pi-uart4.dtbo   →  pi-uart4
+sun50i-h616-disable-uart0.dtbo
+```
+
+The prefix is the **GPIO bank**, not a word order quirk: `ph-uart5` is UART5 routed to the **PH** pins — `PH2`/`PH3`, header pins 8 and 10. The `pi-uart*` overlays map other UARTs onto port I pins and are not what you want.
+
+> ⚠️ **Do not guess this name.** Armbian builds for the same SoC call it `uart5-ph` or `uart5`; the official Orange Pi image calls it `ph-uart5`. U-Boot ignores an unknown overlay **silently** — no error, no serial port — which is exactly the symptom that sends you looking at your wiring instead of your config. Always take the name from the `ls` above.
 
 Enable it with `sudo orangepi-config` → **System → Hardware**, spacebar, save, reboot. Or edit the boot config directly:
 
@@ -164,7 +177,7 @@ sudo nano /boot/orangepiEnv.txt
 
 ```
 overlay_prefix=sun50i-h616
-overlays=uart5
+overlays=ph-uart5
 ```
 
 Reboot, then check **both** of these — the second one matters:
@@ -594,7 +607,7 @@ Start with `sudo /opt/speechllm/deploy/orangepi/doctor.sh` — it covers most of
 |---|---|
 | No boot, red LED only | Wrong image for the board (Phase 0), or a bad flash |
 | Pi never gets an IP over the cable | ICS not enabled on the Wi-Fi adapter, or enabled on the wrong adapter |
-| `/dev/ttyS5` missing, `FileNotFoundError` | Overlay not enabled, no reboot after enabling, or **the wrong overlay name** — it's `uart5`, not `ph-uart5` |
+| `/dev/ttyS5` missing, `FileNotFoundError` | Overlay not enabled, no reboot after enabling, or the wrong overlay name — take it from `ls /boot/dtb/allwinner/overlay/`, it differs between official and Armbian images |
 | Serial port exists but nothing works | `dmesg` shows `pinctrl request() failed for pin 226` — the pins are already claimed. Use a USB-TTL adapter |
 | `Permission denied` on the serial port | Not in `dialout` (note: that's errno 13, not the errno 2 above) |
 | `bad interpreter: /bin/bash^M` | CRLF line endings from a Windows checkout — see `.gitattributes` in Phase 7 |

@@ -65,10 +65,12 @@ if [[ -f "$ENVFILE" ]]; then
     if grep -qE '^overlays=.*uart5' "$ENVFILE"; then
         ok "$ENVFILE enables a uart5 overlay: $(grep -E '^overlays=' "$ENVFILE")"
     else
-        bad "$ENVFILE does not enable uart5"
-        fix "sudo orangepi-config → System → Hardware → enable uart5 → reboot"
-        fix "or add 'overlays=uart5' (and 'overlay_prefix=sun50i-h616') to $ENVFILE, then reboot"
-        fix "NOTE: the overlay is named 'uart5' or 'uart5-ph', NOT 'ph-uart5'"
+        bad "$ENVFILE does not enable a uart5 overlay"
+        fix "sudo orangepi-config → System → Hardware → enable the uart5 overlay → reboot"
+        fix "or add these two lines to $ENVFILE and reboot:"
+        fix "    overlay_prefix=sun50i-h616"
+        fix "    overlays=${UART_OVERLAYS:+$(printf '%s' "$UART_OVERLAYS" | tr ' ' '\n' | sed -n 's/^sun50i-h616-\(.*uart5.*\)\.dtbo$/\1/p' | head -1)}"
+        fix "(the name above is read from your own overlay dir — do not copy it from a guide)"
     fi
 fi
 
