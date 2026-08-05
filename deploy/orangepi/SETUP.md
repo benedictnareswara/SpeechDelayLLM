@@ -186,6 +186,25 @@ Reboot, then check **both** of these — the second one matters:
 ls -l /dev/ttyS*
 ```
 
+> ⚠️ **`/dev/ttyS5` existing does not mean UART5 works.** The 8250 driver creates a node for every UART slot the SoC could have, overlay or not — a fresh Zero 3 shows `ttyS0` through `ttyS5` before you configure anything. Open one with no hardware behind it and you get `termios.error: (5, 'Input/output error')`.
+
+The real test is `/proc/tty/driver/serial`. A working port reports a UART type and an mmio address; a phantom reports `uart:unknown`:
+
+```bash
+sudo cat /proc/tty/driver/serial
+```
+
+```
+0: uart:16550A mmio:0x05000000 irq:31 tx:0 rx:0    ← real
+5: uart:unknown port:00000000 irq:0                ← node only, no hardware
+```
+
+Confirm the overlay actually probed:
+
+```bash
+dmesg | grep -iE 'ttyS|uart'
+```
+
 ```bash
 dmesg | grep -iE 'uart|pinctrl'
 ```

@@ -46,6 +46,16 @@ else
     printf '  serial:  %s\n' "${SERIAL_PORTS[*]}"
 fi
 
+# This install needs the network; everything after it runs offline. Check now
+# rather than dying half way through a 100 MB download.
+if ! getent hosts pypi.org >/dev/null 2>&1; then
+    warn "Cannot resolve pypi.org — DNS is down. The install will fail partway."
+    warn "  routing:  ping -c2 1.1.1.1"
+    warn "  dns:      cat /etc/resolv.conf"
+    warn "  fix:      sudo resolvectl dns \$(ip route show default | awk '{print \$5; exit}') 1.1.1.1 8.8.8.8"
+    die "Fix networking, then re-run. Nothing has been changed."
+fi
+
 # ── System packages ──────────────────────────────────────────
 log "Installing system packages"
 apt-get update -qq
@@ -107,8 +117,14 @@ if [[ -f "$REPO_DIR/deploy/orangepi/requirements-device.txt" ]]; then
 else
     warn "No requirements-device.txt — resolving unpinned (Milestone 0 should pin these)."
 fi
-"$PREFIX/.venv/bin/pip" install --quiet -e "$PREFIX/packages/speechllm-core"
-"$PREFIX/.venv/bin/pip" install --quiet -e "$PREFIX/packages/speechllm-device"
+# --no-build-isolation is deliberate. Without it pip builds each editable
+# install in a throwaway environment and re-downloads setuptools from PyPI,
+# so installing our own pure-Python packages needs working DNS — and fails
+# with "Could not find a version that satisfies setuptools>=68" the moment the
+# network blinks. setuptools and wheel are already in the venv from above.
+log "Installing the SpeechLLM packages"
+"$PREFIX/.venv/bin/pip" install --quiet --no-build-isolation -e "$PREFIX/packages/speechllm-core"
+"$PREFIX/.venv/bin/pip" install --quiet --no-build-isolation -e "$PREFIX/packages/speechllm-device"
 
 # ── Models ───────────────────────────────────────────────────
 # HF_HOME must match device.env, or the model is cached somewhere the service

@@ -83,6 +83,28 @@ fi
 
 if [[ -e "$DFPLAYER_PORT" ]]; then
     ok "DFPLAYER_PORT=$DFPLAYER_PORT exists"
+
+    # A node existing proves NOTHING. The 8250 driver creates /dev/ttyS0..N for
+    # every UART slot the SoC could have; without the device-tree overlay there
+    # is no hardware behind it and the first tcgetattr() returns EIO:
+    #     termios.error: (5, 'Input/output error')
+    # /proc/tty/driver/serial is the ground truth — a real port reports a UART
+    # type and an mmio address, an unconfigured one reports "uart:unknown".
+    if [[ "$DFPLAYER_PORT" == *ttyS* ]]; then
+        PORT_NUM="${DFPLAYER_PORT##*ttyS}"
+        SERIAL_INFO="$(awk -v n="${PORT_NUM}:" '$1 == n' /proc/tty/driver/serial 2>/dev/null)"
+        if [[ -z "$SERIAL_INFO" ]]; then
+            soft "could not read /proc/tty/driver/serial (run this script with sudo)"
+        elif [[ "$SERIAL_INFO" == *uart:unknown* ]]; then
+            bad "$DFPLAYER_PORT has NO hardware behind it: $SERIAL_INFO"
+            fix "the node exists but the overlay is not loaded — enabling it is still required"
+            fix "check:  grep -E '^(overlay_prefix|overlays)=' /boot/orangepiEnv.txt"
+            fix "then reboot, and confirm with: dmesg | grep -i ttyS"
+        else
+            ok "$DFPLAYER_PORT is backed by real hardware: $SERIAL_INFO"
+        fi
+    fi
+
     if sudo -u speechllm test -r "$DFPLAYER_PORT" && sudo -u speechllm test -w "$DFPLAYER_PORT"; then
         ok "the speechllm user can read/write it"
     else

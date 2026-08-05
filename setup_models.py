@@ -32,8 +32,14 @@ MODELS_DIR = Path(__file__).parent / "models"
 MODEL_SIZE = os.getenv("STT_MODEL_SIZE", "tiny")
 COMPUTE_TYPE = os.getenv("STT_COMPUTE_TYPE", "int8")
 
+# Pinned to a tag, NOT master. The upstream file changed model generation in
+# place — v4 exposed separate LSTM `h`/`c` inputs, v5 replaced them with one
+# combined `state` tensor — so tracking master silently changes the ONNX
+# interface under the device. input/vad.py handles both generations, but two
+# units staged weeks apart should still get the same weights.
+SILERO_REF = "v5.1"
 SILERO_URL = (
-    "https://github.com/snakers4/silero-vad/raw/master/"
+    f"https://github.com/snakers4/silero-vad/raw/{SILERO_REF}/"
     "src/silero_vad/data/silero_vad.onnx"
 )
 SILERO_FILE = "silero_vad.onnx"
