@@ -26,6 +26,39 @@ from pathlib import Path
 REPO_ROOT = Path(os.getenv("SPEECHLLM_ROOT") or Path(__file__).resolve().parents[4])
 
 
+# systemd injects this via EnvironmentFile=, so under the service the loader
+# below is a no-op. It exists for runs started by hand.
+DEVICE_ENV_FILE = Path(os.getenv("SPEECHLLM_ENV_FILE", "/etc/speechllm/device.env"))
+
+
+def _load_device_env() -> None:
+    """Load /etc/speechllm/device.env when it wasn't already in the environment.
+
+    Without this, a hand-started process silently takes the laptop defaults —
+    null audio sink, default microphone, HF_HUB_OFFLINE unset — and *looks*
+    like it is working while behaving nothing like the service. The giveaway
+    is a run that logs "Audio sink: null" and plays no audio on a device whose
+    device.env says AUDIO_SINK=dfplayer.
+
+    Existing variables always win, so systemd's values and any explicit
+    override on the command line are never clobbered. Parsed by hand rather
+    than with python-dotenv to keep speechllm-core dependency-free.
+    """
+    try:
+        text = DEVICE_ENV_FILE.read_text()
+    except OSError:
+        return  # not a device, or not readable — laptop defaults are correct
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        os.environ.setdefault(key.strip(), value.strip())
+
+
+_load_device_env()
+
+
 def _env_str(key: str, default: str) -> str:
     return os.getenv(key, default)
 
