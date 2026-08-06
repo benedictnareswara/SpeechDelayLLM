@@ -91,7 +91,7 @@ class RecordingSink:
         self.closed = True
 
 
-def build(words, *, utterances=1, sink=None, stt=None, **capture_kwargs):
+def build(words, *, utterances=1, sink=None, stt=None, thinking_gap_ms=0, **capture_kwargs):
     capture = FakeCapture(utterances=utterances, **capture_kwargs)
     sink = sink or RecordingSink()
     orchestrator = Orchestrator(
@@ -103,6 +103,7 @@ def build(words, *, utterances=1, sink=None, stt=None, **capture_kwargs):
         Segmenter(min_speech_ms=150, max_speech_ms=3000, silence_ms=500),
         log_path=None,
         cooldown_ms=0,   # skip the real cooldown sleep; gating is asserted via drain()
+        thinking_gap_ms=thinking_gap_ms,
     )
     return orchestrator, capture, sink
 
@@ -143,6 +144,36 @@ class TestHappyPath:
         orchestrator, _, sink = build(["ma", "susu"], utterances=2)
         orchestrator.run()
         assert sink.ui.count(UiSound.THINKING) == 2
+
+
+class TestThinkingChime:
+    """The chime acknowledges the child during STT latency, but firing it on
+    every utterance lands it under a second behind the previous reply and reads
+    as interruption. It is gated on how long the device has been quiet."""
+
+    def test_chime_plays_on_the_first_utterance_of_a_session(self):
+        # Nothing has been said yet, so however large the gap, the first
+        # utterance must still be acknowledged.
+        _, _, sink = _run(["ma"], utterances=1, thinking_gap_ms=999_999)
+        assert UiSound.THINKING in sink.ui
+
+    def test_chime_suppressed_during_rapid_back_and_forth(self):
+        # Three utterances back to back with a large required gap: only the
+        # first is a "fresh start", the rest are mid-exchange.
+        _, _, sink = _run(["ma", "ba", "pa"], utterances=3, thinking_gap_ms=999_999)
+        assert sink.ui.count(UiSound.THINKING) == 1
+
+    def test_gap_of_zero_restores_chime_on_every_utterance(self):
+        _, _, sink = _run(["ma", "ba", "pa"], utterances=3, thinking_gap_ms=0)
+        assert sink.ui.count(UiSound.THINKING) == 3
+
+
+def _run(words, *, utterances, thinking_gap_ms):
+    orchestrator, capture, sink = build(
+        words, utterances=utterances, thinking_gap_ms=thinking_gap_ms
+    )
+    orchestrator.run()
+    return orchestrator, capture, sink
 
 
 class TestMicGating:

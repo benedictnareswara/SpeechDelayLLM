@@ -148,6 +148,16 @@ class Settings:
     # Silence enforced after playback before the mic re-opens, so the device
     # never transcribes the tail of its own voice.
     speak_cooldown_ms: int = field(default_factory=lambda: _env_int("SPEAK_COOLDOWN_MS", 300))
+    # The "thinking" chime covers STT latency so a child is not left in silence
+    # for seconds. But firing it on *every* utterance turns a conversation into
+    # constant chatter, and it can land under a second after the previous reply.
+    # So it only plays when this much quiet has passed since the last reply
+    # ended — i.e. when the child is starting something, not mid-exchange.
+    #   0       always chime (the old behaviour)
+    #   999999  never chime
+    thinking_chime_min_gap_ms: int = field(
+        default_factory=lambda: _env_int("THINKING_CHIME_MIN_GAP_MS", 5000)
+    )
     # Hard ceiling on how long we wait for BUSY to clear, in case the pin is
     # miswired or the module resets mid-track.
     playback_timeout_s: float = field(

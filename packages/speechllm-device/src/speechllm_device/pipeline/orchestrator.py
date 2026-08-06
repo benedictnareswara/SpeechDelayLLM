@@ -104,6 +104,7 @@ class Orchestrator:
         *,
         log_path: Path | None = None,
         cooldown_ms: int | None = None,
+        thinking_gap_ms: int | None = None,
     ):
         self._capture = capture
         self._vad = vad
@@ -121,6 +122,12 @@ class Orchestrator:
         self._cooldown_ms = (
             settings.speak_cooldown_ms if cooldown_ms is None else cooldown_ms
         )
+        self._thinking_gap_ms = (
+            settings.thinking_chime_min_gap_ms if thinking_gap_ms is None else thinking_gap_ms
+        )
+        # Far enough in the past that the first utterance of a session always
+        # gets its chime.
+        self._last_reply_end = float("-inf")
         self._running = False
         self.stats = Stats()
 
@@ -159,9 +166,20 @@ class Orchestrator:
             utterance.duration_ms, utterance.reason.value, utterance.peak_confidence,
         )
 
-        # Immediate feedback. STT takes seconds on this hardware; a toddler
-        # needs to know the device heard them well before the reply arrives.
-        self._sink.play_ui(UiSound.THINKING)
+        # Feedback that we heard them, covering the seconds of STT latency.
+        #
+        # Suppressed during a rapid back-and-forth: chiming after every single
+        # utterance lands under a second behind the previous reply and reads as
+        # interruption rather than acknowledgement. It earns its place when the
+        # child has been quiet and is starting something new.
+        quiet_ms = (time.monotonic() - self._last_reply_end) * 1000
+        if quiet_ms >= self._thinking_gap_ms:
+            self._sink.play_ui(UiSound.THINKING)
+        else:
+            logger.debug(
+                "Thinking chime suppressed (%.0fms since last reply < %dms)",
+                quiet_ms, self._thinking_gap_ms,
+            )
 
         # ── Transcribe ───────────────────────────────────────
         stt_start = time.monotonic()
@@ -199,6 +217,10 @@ class Orchestrator:
             logger.error("Cannot speak response: %s", e)
             self.stats.unspeakable += 1
             self._sink.play_ui(UiSound.ERROR)
+
+        # Timed from when the reply stopped sounding, not when the utterance
+        # arrived — the gap the child experiences is silence after the speaker.
+        self._last_reply_end = time.monotonic()
 
         total_ms = (time.monotonic() - started) * 1000
         self.stats.total_ms.append(total_ms)
