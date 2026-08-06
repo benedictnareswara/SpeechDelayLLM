@@ -64,11 +64,13 @@ class WhisperRecognizer:
         compute_type: str | None = None,
         threads: int | None = None,
         language: str | None = None,
+        max_new_tokens: int | None = None,
     ):
         model_size = model_size or settings.stt_model_size
         compute_type = compute_type or settings.stt_compute_type
         threads = threads or settings.stt_threads
         self._language = language or settings.stt_language
+        self._max_new_tokens = max_new_tokens or settings.stt_max_new_tokens
 
         logger.info(
             "Loading faster-whisper '%s' (%s, %d threads)...", model_size, compute_type, threads
@@ -117,8 +119,16 @@ class WhisperRecognizer:
                 no_speech_threshold=0.6,     # reject non-speech
                 condition_on_previous_text=False,  # no context memory
                 word_timestamps=False,       # not needed here
-                without_timestamps=True,     # skip timestamp tokens entirely
+                # Bound the decoder. Toddler babble is not speech, and Whisper
+                # answers non-speech by looping a token until it hits its 448
+                # cap — 'mengengengen…' for 14s instead of 3.5s. Every real
+                # utterance here is one short word, so this costs nothing.
+                max_new_tokens=self._max_new_tokens,
             )
+            # NOTE: do NOT add without_timestamps=True as an optimization.
+            # Timestamp tokens are part of how the decoder decides to stop;
+            # removing them makes the repetition loop above far more frequent,
+            # which is a 4x latency regression, not a saving.
 
             # Collect text from all segments
             text = " ".join(seg.text.strip() for seg in segments).strip().lower()

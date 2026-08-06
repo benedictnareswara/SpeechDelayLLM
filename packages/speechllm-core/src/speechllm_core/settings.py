@@ -78,6 +78,11 @@ class Settings:
         default_factory=lambda: _env_str("STT_COMPUTE_TYPE", "int8")
     )
     stt_threads: int = field(default_factory=lambda: _env_int("STT_THREADS", 4))
+    # Hard ceiling on decoded tokens. Every expected utterance is one short
+    # word ("ma", "susu", "makan"), so a handful of tokens is ample — and the
+    # cap is what stops Whisper's repetition loop from decoding 448 tokens of
+    # "mengengengen..." and turning a 3.5s transcription into a 14s one.
+    stt_max_new_tokens: int = field(default_factory=lambda: _env_int("STT_MAX_NEW_TOKENS", 16))
 
     # ── Phoneme extraction ───────────────────────────────────
     phoneme_confidence_threshold: float = field(
