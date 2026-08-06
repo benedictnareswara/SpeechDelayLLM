@@ -1,0 +1,23 @@
+# Let the speechllm service read the DFPlayer BUSY line without running as root.
+#
+# Installed to /etc/udev/rules.d/99-speechllm-gpio.rules by install.sh.
+#
+# Why this matters more than it looks: the BUSY pin (PI0, physical pin 11) is
+# the only ground truth for "the DFPlayer is still playing". Without it the
+# pipeline times playback from manifest durations instead, and that estimate
+# drifts — eventually the microphone reopens while the speaker is still
+# talking, the device transcribes its own voice, and it answers itself in a
+# loop. Mic gating is the thing this hardware design depends on.
+#
+# Symptom of not having this rule, in the service log:
+#   No GPIO backend available ([Errno 13] Permission denied:
+#   '/sys/class/gpio/export'). Falling back to mock.
+
+# Preferred path: character device, used by libgpiod.
+SUBSYSTEM=="gpio", KERNEL=="gpiochip*", GROUP="gpio", MODE="0660"
+
+# Fallback path: the legacy sysfs interface, still present on the Allwinner
+# BSP kernel. Exporting a pin creates a new directory owned by root, so the
+# group has to be reapplied on every add — hence RUN+= rather than GROUP=.
+SUBSYSTEM=="gpio", ACTION=="add", \
+    RUN+="/bin/sh -c 'chgrp -R gpio /sys/class/gpio 2>/dev/null; chmod -R g+rw /sys/class/gpio 2>/dev/null; true'"

@@ -70,9 +70,13 @@ if ! id -u "$SERVICE_USER" >/dev/null 2>&1; then
     useradd --system --create-home --home-dir /var/lib/speechllm \
             --shell /usr/sbin/nologin "$SERVICE_USER"
 fi
-# gpio group is created by the Orange Pi BSP; tolerate its absence.
+# Some Orange Pi BSP images ship a `gpio` group and some do not. Create it if
+# missing rather than tolerating its absence: without group access to the GPIO
+# character device the BUSY pin falls back to a mock, and mic gating degrades
+# from a hardware signal to a guess.
+getent group gpio >/dev/null || groupadd --system gpio
 for group in audio dialout gpio; do
-    getent group "$group" >/dev/null && usermod -aG "$group" "$SERVICE_USER"
+    usermod -aG "$group" "$SERVICE_USER"
 done
 
 # ── Files ────────────────────────────────────────────────────
@@ -147,6 +151,17 @@ fi
 
 if [[ -f "$REPO_DIR/deploy/orangepi/asound.conf" ]]; then
     install -m 0644 "$REPO_DIR/deploy/orangepi/asound.conf" /etc/asound.conf
+fi
+
+# GPIO access for the DFPlayer BUSY line. Without this the service runs but
+# falls back to timing playback from manifest durations, and the microphone
+# can reopen while the speaker is still talking.
+if [[ -f "$REPO_DIR/deploy/orangepi/99-speechllm-gpio.rules" ]]; then
+    install -m 0644 "$REPO_DIR/deploy/orangepi/99-speechllm-gpio.rules" \
+        /etc/udev/rules.d/99-speechllm-gpio.rules
+    udevadm control --reload-rules && udevadm trigger --subsystem-match=gpio || \
+        warn "udev reload failed; a reboot will apply the GPIO rules."
+    echo "  installed GPIO udev rules"
 fi
 
 chown -R "$SERVICE_USER:$SERVICE_USER" "$PREFIX" "$LOG_DIR"
