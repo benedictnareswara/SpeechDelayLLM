@@ -117,6 +117,7 @@ class WhisperRecognizer:
                 no_speech_threshold=0.6,     # reject non-speech
                 condition_on_previous_text=False,  # no context memory
                 word_timestamps=False,       # not needed here
+                without_timestamps=True,     # skip timestamp tokens entirely
             )
 
             # Collect text from all segments

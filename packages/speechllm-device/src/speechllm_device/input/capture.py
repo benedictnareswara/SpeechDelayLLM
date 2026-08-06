@@ -33,16 +33,32 @@ class AudioDeviceError(RuntimeError):
     """No usable capture device."""
 
 
-def find_input_device(name_hint: str = "") -> int | None:
-    """Resolve a device-name substring to a sounddevice index.
+def find_input_device(name_hint: str | int = "") -> int | None:
+    """Resolve AUDIO_INPUT_DEVICE to a sounddevice index.
 
-    Returns None for the system default when no hint is given.
+    Accepts a name substring ("GVAUDIO"), a bare index ("3"), or "" for the
+    system default.
+
+    Prefer the name. Card order is not stable across boots, so an index that
+    works today can point at HDMI tomorrow — and HDMI has no capture channel,
+    which surfaces as an unrelated-looking stream error. The index form exists
+    as a bring-up escape hatch when a name is ambiguous.
+
+    Note that ALSA PCM strings like "plug:hw:3,0" are NOT accepted here:
+    sounddevice matches against PortAudio device names, not ALSA PCM names.
+    Use the name substring, or fix /etc/asound.conf.
     """
-    import sounddevice as sd
-
-    if not name_hint:
+    # Both escape hatches resolve without touching PortAudio, so a broken audio
+    # backend cannot stop you forcing a known-good index during bring-up.
+    if name_hint == "" or name_hint is None:
         return None
 
+    if isinstance(name_hint, int) or str(name_hint).strip().isdigit():
+        return int(name_hint)
+
+    import sounddevice as sd
+
+    name_hint = str(name_hint)
     devices = sd.query_devices()
     matches = [
         i
@@ -50,9 +66,16 @@ def find_input_device(name_hint: str = "") -> int | None:
         if d["max_input_channels"] > 0 and name_hint.lower() in d["name"].lower()
     ]
     if not matches:
-        available = [d["name"] for d in devices if d["max_input_channels"] > 0]
+        available = [
+            f"[{i}] {d['name']}"
+            for i, d in enumerate(devices)
+            if d["max_input_channels"] > 0
+        ]
         raise AudioDeviceError(
-            f"No input device matching {name_hint!r}. Available: {available}"
+            f"AUDIO_INPUT_DEVICE={name_hint!r} matches no capture device.\n"
+            "  Available inputs:\n    " + "\n    ".join(available) + "\n"
+            "  Set AUDIO_INPUT_DEVICE in /etc/speechllm/device.env to a substring "
+            "of one of the names above (or its index)."
         )
     if len(matches) > 1:
         logger.warning(

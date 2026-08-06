@@ -203,7 +203,14 @@ def main(argv: list[str] | None = None) -> int:
     elif perceived < 3000:
         print("  ⚠️  Workable, but keep the thinking chime and consider VAD_SILENCE_MS=350.")
     else:
-        print("  ❌ Too slow. Try whisper.cpp tiny, or shorten VAD_MAX_SPEECH_MS.")
+        print("  ❌ Too slow.")
+        print("     Note: shortening VAD_MAX_SPEECH_MS will NOT help. Whisper pads")
+        print("     every clip to a 30s window, so a 0.4s 'ma' costs the same as a")
+        print("     25s sentence — which is why p50/p95/max above are nearly equal.")
+        print("     Check the CPU governor first (cheap):")
+        print("       cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor")
+        print("     Then consider whisper.cpp tiny, or a keyword spotter — this")
+        print("     vocabulary is 21 short labels, not open-ended speech.")
 
     rss = memory_mb()
     if rss:
