@@ -209,6 +209,25 @@ fi
 
 # ── Service ──────────────────────────────────────────────────
 section "Service"
+# systemd treats an unknown group in SupplementaryGroups= as fatal
+# (status=216/GROUP), before any application code runs.
+UNIT=/etc/systemd/system/speechllm.service
+if [[ -f "$UNIT" ]]; then
+    for g in $(sed -n 's/^SupplementaryGroups=//p' "$UNIT"); do
+        if getent group "$g" >/dev/null; then
+            ok "unit group '$g' exists"
+        else
+            bad "unit lists SupplementaryGroups=$g but that group does not exist"
+            fix "the service will die with status=216/GROUP before starting"
+            fix "remove '$g' from $UNIT, or: sudo groupadd $g"
+        fi
+    done
+    for g in audio dialout gpio; do
+        getent group "$g" >/dev/null && id -nG speechllm 2>/dev/null | grep -qw "$g" \
+            && ok "speechllm is a member of '$g'"
+    done
+fi
+
 if systemctl list-unit-files speechllm.service >/dev/null 2>&1; then
     STATE="$(systemctl is-active speechllm 2>/dev/null || true)"
     ENABLED="$(systemctl is-enabled speechllm 2>/dev/null || true)"
